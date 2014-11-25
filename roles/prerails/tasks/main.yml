@@ -1,0 +1,7 @@
+---
+- name: Install extra packages Rails might have dependencies on
+  sudo: yes
+  yum: name={{ item }}
+  with_items:
+    - patch
+    - mysql-devel
