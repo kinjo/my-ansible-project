@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Install Ansible
-sudo apt-get install -y python-setuptools python-dev
+sudo yum install -y epel-release python-setuptools python-devel
 sudo easy_install pip
 sudo pip install ansible
-sudo apt-get install -y sshpass
+sudo yum install -y sshpass
