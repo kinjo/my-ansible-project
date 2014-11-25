@@ -1,0 +1,38 @@
+---
+- name: Install packages needed for ruby compiling
+  sudo: yes
+  yum: name={{ item }}
+  with_items:
+    - git
+    - gcc
+    - make
+    - openssl
+    - openssl-devel
+    - readline-devel
+
+- name: Install rbenv
+  git: repo=https://github.com/sstephenson/rbenv.git dest=~/.rbenv
+
+- name: Install ruby-build
+  git: repo=https://github.com/sstephenson/ruby-build.git dest=~/.rbenv/plugins/ruby-build
+
+- name: Setup .bash_profile
+  template: src=bash_profile.j2 dest=~/.bash_profile
+
+- name: Install ruby
+  sudo: yes
+  command: su - {{ rbenv.user }} -c "bash -lc 'rbenv install -s {{ rbenv.ruby_version }}'"
+
+- name: Enable ruby
+  sudo: yes
+  command: su - {{ rbenv.user }} -c "bash -lc 'rbenv global {{ rbenv.ruby_version }}'"
+
+- name: Update gem itself
+  sudo: yes
+  command: su - {{ rbenv.user }} -c "bash -lc 'gem update --system'"
+
+- name: Install gems for common use
+  sudo: yes
+  command: su - {{ rbenv.user }} -c "bash -lc 'gem install {{ item }} --no-ri --no-rdoc'"
+  with_items:
+    - bundler

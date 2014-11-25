@@ -1,0 +1,4 @@
+---
+rbenv:
+  user: vagrant
+  ruby_version: 2.1.3
