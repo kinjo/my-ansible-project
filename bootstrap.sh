@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Install Ansible
-sudo apt-get install -y python-dev python-pip sshpass git
+sudo yum install -y epel-release python-setuptools python-devel sshpass git
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
