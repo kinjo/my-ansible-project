@@ -1,0 +1,28 @@
+---
+- name: Ensure packages needed for rbenv are installed
+  sudo: yes
+  apt: name={{ item }}
+  with_items:
+    - autoconf
+    - bison
+    - build-essential
+    - curl
+    - git-core
+    - libncurses5-dev
+    - libreadline6-dev
+    - libsqlite3-dev
+    - libssl-dev
+    - libxml2-dev
+    - libxslt1-dev
+    - libyaml-dev
+    - sqlite3
+    - zlib1g-dev
+
+- name: Ensure rbenv is git cloned
+  git: repo=https://github.com/sstephenson/rbenv.git dest=~/.rbenv
+
+- name: Ensure ruby-build is git cloned
+  git: repo=https://github.com/sstephenson/ruby-build.git dest=~/.rbenv/plugins/ruby-build
+
+- name: Ensure .bash_profile is present
+  template: src=bash_profile.j2 dest=~/.bash_profile

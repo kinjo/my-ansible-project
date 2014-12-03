@@ -1,2 +1,6 @@
 ---
-something: something
+rbenv:
+  user: vagrant
+
+ruby:
+  version: 2.1.5
