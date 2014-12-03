@@ -4,3 +4,7 @@ rbenv:
 
 ruby:
   version: 2.1.5
+
+ruby_reading:
+  dir: ~/ruby
+  version: v2_1_5

@@ -1,0 +1,25 @@
+---
+- name: Ensure MRI is git cloned
+  git: repo=https://github.com/ruby/ruby.git dest={{ ruby_reading.dir }} version={{ ruby_reading.version }}
+
+- name: Generate configuration script
+  command: autoconf chdir={{ ruby_reading.dir }}
+
+- name: Run configuration script
+  command: ./configure chdir={{ ruby_reading.dir }}
+  environment:
+    CFLAGS: -g -O0
+
+- name: Make
+  command: make -j2 chdir={{ ruby_reading.dir }}
+
+- name: Ensure packages useful for reading are installed
+  sudo: yes
+  apt: name={{ item }}
+  with_items:
+    - gdb
+    - exuberant-ctags
+    - lv
+
+- name: Generate tags for reading
+  shell: find . -name "*.[ch]" | xargs ctags chdir={{ ruby_reading.dir }}
