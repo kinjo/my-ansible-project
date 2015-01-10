@@ -1,6 +1,0 @@
----
-- name: Ensure SSH keypair is present
-  local_action: command ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa creates=~/.ssh/id_rsa
-
-- name: Ensure SSH public key is registered into authorized_keys on remote host
-  authorized_key: user=vagrant key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
