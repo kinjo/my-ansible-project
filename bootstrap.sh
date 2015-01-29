@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Install Ansible
-sudo apt-get install -y python-setuptools python-dev
+sudo apt-get install -y python-dev python-pip sshpass
 sudo easy_install pip
-sudo pip install ansible
-sudo apt-get install -y sshpass
+sudo pip install ansible PyYaML Jinja2
