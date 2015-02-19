@@ -12,7 +12,7 @@ Usage
 
         git clone https://github.com/kinjo/my-ansible-project.git
 
-2. Switch to a branch
+2. Switch to branch
 
         git checkout -b rbenv+ruby origin/rbenv+ruby
 
@@ -26,13 +26,11 @@ Usage
 
 5. Build environment
 
-   Type below at a first build.
+   Type following commands in Vagrant virtual machine to install dependent roles.
 
         cd /vagrant
-        make first
+        make install-role
 
-   Type "vagrant" when the above command asks for a password.
-
-   On subsequent build, use following command.
+   Finally, run ansible-playbook to build environment.
 
         make run
