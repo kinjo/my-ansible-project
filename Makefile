@@ -2,7 +2,7 @@ define HELP
 Available commands:
 
 make run			run all tasks
-make install-roles		install roles declared in requirements.yml
+make install-role		install roles declared in requirements.yml
 make help			show help
 endef
 export HELP
