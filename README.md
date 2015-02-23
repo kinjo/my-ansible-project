@@ -29,7 +29,7 @@ Usage
    Type following commands in Vagrant virtual machine to install dependent roles.
 
         cd /vagrant
-        make install-role
+        make role
 
    Finally, run ansible-playbook to build environment.
 
