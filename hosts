@@ -1,1 +1,1 @@
-localhost       ansible_ssh_host=localhost ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+openstack-allinone       ansible_ssh_host=192.168.33.254 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant

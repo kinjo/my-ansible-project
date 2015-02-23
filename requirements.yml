@@ -1,7 +1,3 @@
 ---
-# See http://docs.ansible.com/galaxy.html
-
-# - src: user.role
-
-# - src: ssh://user@git.server.local:22/~/git/ansible-role/local-role.git
-#   scm: git
+- src: https://github.com/kinjo/ansible-role-packstack
+  name: packstack

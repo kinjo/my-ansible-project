@@ -1,6 +1,5 @@
 ---
-- hosts: all
+- hosts: openstack-allinone
   roles:
-    - role: something
-  gather_facts: no
-  sudo: no
+    - role: packstack
+  sudo: yes
