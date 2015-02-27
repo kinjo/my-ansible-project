@@ -1,15 +1,15 @@
 define HELP
 Available commands:
 
-make run			run all tasks
-make role			install roles declared in requirements.yml
-make help			show help
+make install			Run all tasks
+make role			Install roles declared in requirements.yml
+make help			Show help
 endef
 export HELP
 
 all: help
 
-run:
+install:
 	. /opt/ansibleenv/bin/activate && ansible-playbook site.yml
 role:
 	. /opt/ansibleenv/bin/activate && ansible-galaxy install --ignore-errors -r requirements.yml
