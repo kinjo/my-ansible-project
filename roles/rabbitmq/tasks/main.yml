@@ -1,0 +1,17 @@
+---
+- include: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enable rabbitmq_management
+  rabbitmq_plugin: names=rabbitmq_management state=enabled
+
+- name: Add user `management`
+  rabbitmq_user:
+  args:
+    user: management
+    password: management
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    tags: administrator
