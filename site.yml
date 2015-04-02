@@ -1,6 +1,6 @@
 ---
 - hosts: all
   roles:
-    - role: something
-  gather_facts: no
-  sudo: no
+  - role: rabbitmq
+  gather_facts: yes
+  sudo: yes
