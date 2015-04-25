@@ -3,7 +3,7 @@
 # Install Ansible
 sudo apt-get update
 sudo apt-get dist-upgrade -y
-sudo apt-get install -y python-dev python-pip sshpass git
+sudo apt-get install -y python-dev python-setuptools sshpass git
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
