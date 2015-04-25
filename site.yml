@@ -1,6 +1,6 @@
 ---
 - hosts: all
   roles:
-    - role: something
+  - role: something
   gather_facts: no
   sudo: no
