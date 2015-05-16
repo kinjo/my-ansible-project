@@ -1,0 +1,175 @@
+#!/usr/bin/env expect
+
+set timeout 30
+
+spawn drblpush -i
+
+expect {
+  -re "Please enter DNS domain \\\(.*\\\):.*" {
+    send "drbl.local\r"
+  }
+}
+
+expect {
+  -re "Please enter NIS/YP domain name:.*" {
+    send "penguinzilla\r"
+  }
+}
+
+expect {
+  -re "Please enter the client hostname prefix:.*" {
+    send "drbl-\r"
+  }
+}
+
+expect {
+  -re "Which ethernet port in this server is for public Internet accsess, not for DRBL connection?.*" {
+    send "eth0\r"
+  }
+}
+
+expect {
+  -re "Now we can collect the MAC address of clients!.*Do you want to collect them?.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Do you want to let the DHCP service in DRBL server offer same IP address to the client every time when client boots.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "What is the initial number do you want to use in the last set of digits in the IP.*" {
+    send "1\r"
+  }
+}
+
+expect {
+  -re "How many DRBL clients.*" {
+    send "12\r"
+  }
+}
+
+expect {
+  -re "We will set the IP address for the clients connected to DRBL server's ethernet network interface.*Accept ?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "Press Enter to continue....*" {
+    send "\r"
+  }
+}
+
+expect {
+  -re "In the system, there are 3 modes for diskless linux services:.*Which mode do you prefer?.*" {
+    send "0\r"
+  }
+}
+
+expect {
+  -re "In the system, there are 4 modes available for clonezilla:.*Which mode do you prefer?.*" {
+    send "0\r"
+  }
+}
+
+expect {
+  -re "When using clonezilla, which directory in this server you want to store the saved image.*" {
+    send "/home/partimag\r"
+  }
+}
+
+expect {
+  -re "do you want to use that swap partition or create a swap file.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Which mode do you want the clients to use after they boot?.*" {
+    send "1\r"
+  }
+}
+
+expect {
+  -re "Which mode do you want when client boots in graphic mode?.*" {
+    send "0\r"
+  }
+}
+
+expect {
+  -re "Do you want to set the root's password for clients instead of using same root's password copied from server?.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Do you want to set the pxelinux password for clients so that when client boots.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Do you want to set the boot prompt for clients?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "How many 1/10 sec is the boot prompt timeout for clients?.*" {
+    send "30\r"
+  }
+}
+
+expect {
+  -re "Do you want to use graphic background for PXE menu when client boots?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "Do you want to let audio, cdrom, floppy, video and plugdev \\\(like USB device\\\) open to all users in the DRBL client?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "Do you want to setup public IP for clients?.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Do you want to let client has an option to run terminal mode?.*" {
+    send "n\r"
+  }
+}
+
+expect {
+  -re "Do you want to let DRBL server as a NAT server?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "Do you want to keep the old setting of existing DRBL clients if they exist?.*" {
+    send "y\r"
+  }
+}
+
+expect {
+  -re "Press Enter to continue....*" {
+    send "\r"
+  }
+}
+
+expect {
+  -re "We are now ready to deploy the files to system!.*" {
+    send "\r"
+  }
+}
+
+expect -re "The DRBL server is ready!.*"

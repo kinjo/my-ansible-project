@@ -1,0 +1,37 @@
+---
+- name: Add the DRBL key
+  apt_key:
+    url: http://drbl.org/GPG-KEY-DRBL
+
+- name: Add apt repository
+  apt_repository:
+    repo: "deb http://free.nchc.org.tw/drbl-core drbl stable"
+
+- name: Update package index
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install DRBL server
+  apt:
+    name: drbl
+  notify:
+    - Reboot
+    - Wait until rebooting
+
+- name: Run drblsrv -i
+  command: drblsrv
+    --install
+    --netinstall n
+    --console-output n
+    --upgrade_system n
+    --client_kernel_from 1
+
+- name: Run drblpush -i
+  script: drblpush.exp
+
+- name: Run drbl-netinstall -i
+  command: drbl-netinstall
+    --install ubuntu
+    --skip-rerun-gen
+    --overwrite
