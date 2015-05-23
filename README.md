@@ -1,9 +1,19 @@
-Master of my ansible project
+DRBL server on Vagrant by ansible
 ====
 
-A collection of my development environments built by Ansible.
+The purpose of this repository is to study the
+[DRBL(Diskless Remote Boot in Linux)](http://drbl.org/)
+environment in the Vagrant environment using Ansible.
 
-It aims to contain various environments such as Ubuntu based, CentOS based and for Ruby reading, Python programming, trial of OpenStack, etc.
+When you boot a DRBL client, unfortunately, Vagrant can not.
+Because the client created from Vagrant cannot boot from NAT
+network required by Vagrant to manage the VM.
+
+Thus, You have to create the DRBL client manually in the VirtualBox
+and configure the VM to set a Host-only Adapter (such as vboxnet5
+that is set to **192.168.33.0/24** and the **DHCP disabled**) to
+the adapter 1. In addition to that, you have to configure the VM's
+**boot order** to allow the VM to boot from the network.
 
 Usage
 ---
@@ -26,11 +36,6 @@ Usage
 
 5. Install environment
 
-   Type following commands in Vagrant virtual machine to install dependent roles.
-
-        cd /vagrant
-        make role
-
-   Finally, run `make install` to install environment.
-
         make install
+
+6. Boot VM as a DRBL client in the VirtualBox

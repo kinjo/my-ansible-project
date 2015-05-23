@@ -1,23 +1,29 @@
 ---
-- name: Add the DRBL key
+# See http://drbl.org/installation/02-install-required-packages.php
+# Setup DRBL server - II. Install the required packages on server
+
+- name: Install the DRBL key
   apt_key:
     url: http://drbl.org/GPG-KEY-DRBL
 
-- name: Add apt repository
+- name: Edit /etc/apt/sources.list
   apt_repository:
     repo: "deb http://free.nchc.org.tw/drbl-core drbl stable"
 
-- name: Update package index
+- name: Execute "apt-get update"
   apt:
     update_cache: yes
     cache_valid_time: 3600
 
-- name: Install DRBL server
+- name: Execute "apt-get install drbl" to install drbl program
   apt:
     name: drbl
   notify:
     - Reboot
     - Wait until rebooting
+
+# See http://drbl.org/installation/03-setup-client.php
+# Setup DRBL server - III. Set up the file system for the client in the Server
 
 - name: Run drblsrv -i
   command: drblsrv
