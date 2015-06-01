@@ -1,0 +1,17 @@
+---
+- name: Restart the Compute services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+  - nova-api
+  - nova-cert
+  - nova-consoleauth
+  - nova-scheduler
+  - nova-conductor
+  - nova-novncproxy
+
+- name: On the controller node, restart the Compute API service
+  service:
+    name: nova-api
+    state: restarted

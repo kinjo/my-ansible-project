@@ -1,2 +1,94 @@
 ---
-something: something
+# For OpenStack services, this guide uses SERVICE_PASS to reference service
+# account passwords and SERVICE_DBPASS to reference database passwords.
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-security
+
+# Root password for the database
+database_password: password
+
+# Password of user guest of RabbitMQ
+RABBIT_PASS: password
+
+# Database password of Identity service
+KEYSTONE_DBPASS: password
+
+# Password of user demo
+DEMO_PASS: password
+
+# Password of user admin
+ADMIN_PASS: password
+
+# Database password for Image Service
+GLANCE_DBPASS: password
+
+# Password of Image Service user glance
+GLANCE_PASS: password
+
+# Database password for Compute service
+NOVA_DBPASS: password
+
+# Password of Compute service user nova
+NOVA_PASS: password
+
+# Database password for the dashboard
+DASH_DBPASS: password
+
+# Database password for the Block Storage service
+CINDER_DBPASS: password
+
+# Password of Block Storage service user cinder
+CINDER_PASS: password
+
+# Database password for the Networking service
+NEUTRON_DBPASS: password
+
+# Password of Networking service user neutron
+NEUTRON_PASS: password
+
+# Database password for the Orchestration service
+HEAT_DBPASS: password
+
+# Password of Orchestration service user heat
+HEAT_PASS: password
+
+# Database password for the Telemetry service
+CEILOMETER_DBPASS: password
+
+# Password of Telemetry service user ceilometer
+CEILOMETER_PASS: password
+
+# Database password of Database service
+TROVE_DBPASS: password
+
+# Password of Database Service user trove
+TROVE_PASS: password
+
+# The initial administration token
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+ADMIN_TOKEN: admintoken
+
+# The metadata proxy shared secret
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+METADATA_SECRET: metadatasecret
+
+# The physical external network interface
+# http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+INTERFACE_NAME: eth3
+
+# The IP address of the instance tunnels network interface
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+INSTANCE_TUNNELS_INTERFACE_IP_ADDRESS: 10.0.1.11
+
+# The first and last IP addresses of the range that you want to allocate for
+# floating IP addresses.
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron_initial-external-network.html
+FLOATING_IP_START: 203.0.113.101
+FLOATING_IP_END: 203.0.113.200
+# The subnet associated with the physical network
+EXTERNAL_NETWORK_CIDR: 203.0.113.0/24
+# The gateway associated with the physical network
+EXTERNAL_NETWORK_GATEWAY: 203.0.113.2
+
+# Usually, 10.0.2.3 is a router in the VirtualBox's NAT engine which provides
+# DNS to the VirtualBox machine. 8.8.8.8 is also useful.
+tenant_subnet_nameservers: 10.0.2.3

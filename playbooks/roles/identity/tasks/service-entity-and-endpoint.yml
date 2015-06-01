@@ -1,0 +1,14 @@
+---
+# Create the service entity and API endpoint
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-services.html
+
+- name: Create the service entity for the Identity service
+  keystone_service:
+    name: keystone
+    type: identity
+    description: OpenStack Identity
+    token: "{{ os_identity_admin_token }}"
+    public_url: http://{{ os_identity_host }}:5000/v2.0
+    internal_url: http://{{ os_identity_host }}:5000/v2.0
+    admin_url: http://{{ os_identity_host }}:35357/v2.0
+    region: regionOne

@@ -1,0 +1,17 @@
+---
+# Create OpenStack client environment scripts
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-client-environment-scripts.html
+
+- name: admin-openrc.sh file
+  template:
+    src: admin-openrc.sh
+    dest: "~{{ ansible_ssh_user }}/admin-openrc.sh"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+
+- name: demo-openrc.sh file
+  template:
+    src: demo-openrc.sh
+    dest: "~{{ ansible_ssh_user }}/demo-openrc.sh"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"

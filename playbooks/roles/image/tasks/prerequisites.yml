@@ -1,0 +1,50 @@
+---
+# To configure prerequisites
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-install.html
+
+# To create the database, complete these steps
+
+- name: Create the glance database
+  mysql_db:
+    name: glance
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+
+- name: Grant proper access to the glance database
+  mysql_user:
+    name: glance
+    host: "{{ item }}"
+    password: "{{ os_image_database_password }}"
+    priv: glance.*:ALL
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+  with_items:
+  - localhost
+  - "%"
+
+# To create the service credentials, complete these steps
+
+- name: Create the glance user
+  keystone_user:
+    user: glance
+    tenant: service
+    password: "{{ os_image_admin_password }}"
+    token: "{{ os_identity_admin_token }}"
+
+- name: Add the admin role to the glance user
+  keystone_user:
+    user: glance
+    role: admin
+    tenant: service
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the glance service entity
+  keystone_service:
+    name: glance
+    type: image
+    description: OpenStack Image Service
+    token: "{{ os_identity_admin_token }}"
+    public_url: http://{{ os_image_host }}:9292
+    internal_url: http://{{ os_image_host }}:9292
+    admin_url: http://{{ os_image_host }}:9292
+    region: regionOne

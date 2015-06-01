@@ -1,0 +1,290 @@
+---
+# To install the Networking components
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+
+- name: install the Networking components
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - neutron-plugin-ml2
+  - neutron-plugin-openvswitch-agent
+  - neutron-l3-agent
+  - neutron-dhcp-agent
+
+# To configure the Networking common components
+
+- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: rpc_backend
+    value: rabbit
+  - option: rabbit_host
+    value: "{{ os_messaging_host }}"
+  - option: rabbit_password
+    value: "{{ os_messaging_password }}"
+  notify: Restart the Networking services
+
+- name: In the [DEFAULT] and [keystone_authtoken] sections, configure Identity service access
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: DEFAULT
+    option: auth_strategy
+    value: keystone
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: identity_uri
+    value: http://{{ os_identity_host }}:35357
+  - section: keystone_authtoken
+    option: admin_tenant_name
+    value: service
+  - section: keystone_authtoken
+    option: admin_user
+    value: neutron
+  - section: keystone_authtoken
+    option: admin_password
+    value: "{{ os_networking_admin_password }}"
+  notify: Restart the Networking services
+
+- name: In the [DEFAULT] section, enable the Modular Layer 2 (ML2) plug-in, router service, and overlapping IP addresses
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: core_plugin
+    value: ml2
+  - option: service_plugins
+    value: router
+  - option: allow_overlapping_ips
+    value: True
+  notify: Restart the Networking services
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Networking services
+
+# To configure the Modular Layer 2 (ML2) plug-in
+
+- name:  the [ml2] section, enable the flat and generic routing encapsulation (GRE) network type drivers, GRE tenant networks, and the OVS mechanism driver
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ml2
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: type_drivers
+    value: flat,gre
+  - option: tenant_network_types
+    value: gre
+  - option: mechanism_drivers
+    value: openvswitch
+  notify: Restart the Networking services
+
+- name: In the [ml2_type_flat] section, configure the external flat provider network
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ml2_type_flat
+    option: flat_networks
+    value: external
+  notify: Restart the Networking services
+
+- name:  the [ml2_type_gre] section, configure the tunnel identifier (id) range
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ml2_type_gre
+    option: tunnel_id_ranges
+    value: 1:1000
+  notify: Restart the Networking services
+
+- name: In the [securitygroup] section, enable security groups, enable ipset, and configure the OVS iptables firewall driver
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: securitygroup
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: enable_security_group
+    value: True
+  - option: enable_ipset
+    value: True
+  - option: firewall_driver
+    value: neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+  notify: Restart the Networking services
+
+- name: In the [ovs] section, enable tunnels, configure the local tunnel endpoint, and map the external flat provider network to the br-ex external network bridge
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ovs
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: local_ip
+    value: "{{ os_networking_instance_tunnels_interface_ip_address }}"
+  - option: enable_tunneling
+    value: True
+  - option: bridge_mappings
+    value: external:br-ex
+  notify: Restart the Networking services
+
+- name: In the [agent] section, enable GRE tunnels
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: agent
+    option: tunnel_types
+    value: gre
+  notify: Restart the Networking services
+
+# To configure the Layer-3 (L3) agent
+
+- name: In the [DEFAULT] section, configure the driver, enable network namespaces, configure the external network bridge and enable deletion of defunct router namespaces
+  ini_file:
+    dest: /etc/neutron/l3_agent.ini
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: interface_driver
+    value: neutron.agent.linux.interface.OVSInterfaceDriver
+  - option: use_namespaces
+    value: True
+  - option: external_network_bridge
+    value: br-ex
+  - option: router_delete_namespaces
+    value: True
+  notify: Restart the Networking services
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/neutron/l3_agent.ini
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Networking services
+
+# To configure the DHCP agent
+
+- name: In the [DEFAULT] section, configure the drivers, enable namespaces and enable deletion of defunct DHCP namespaces
+  ini_file:
+    dest: /etc/neutron/dhcp_agent.ini
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: interface_driver
+    value: neutron.agent.linux.interface.OVSInterfaceDriver
+  - option: dhcp_driver
+    value: neutron.agent.linux.dhcp.Dnsmasq
+  - option: use_namespaces
+    value: True
+  - option: dhcp_delete_namespaces
+    value: True
+  notify: Restart the Networking services
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/neutron/dhcp_agent.ini
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Networking services
+
+# you can also prevent MTU problems by reducing the instance MTU to account for GRE overhead.
+
+- name: Edit the /etc/neutron/dhcp_agent.ini file and complete the following action
+  ini_file:
+    dest: /etc/neutron/dhcp_agent.ini
+    section: DEFAULT
+    option: dnsmasq_config_file
+    value: /etc/neutron/dnsmasq-neutron.conf
+  notify: Restart the Networking services
+
+- name: Create and edit the /etc/neutron/dnsmasq-neutron.conf file and complete the following action
+  lineinfile:
+    dest: /etc/neutron/dnsmasq-neutron.conf
+    regexp: ^dhcp-option-force=
+    line: dhcp-option-force=26,1454
+    create: yes
+  notify:
+  - Restart the Networking services
+  - Kill any existing dnsmasq processes
+
+# To configure the metadata agent
+
+- name: In the [DEFAULT] section, configure access options
+  ini_file:
+    dest: /etc/neutron/metadata_agent.ini
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: auth_url
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - option: auth_region
+    value: regionOne
+  - option: admin_tenant_name
+    value: service
+  - option: admin_user
+    value: neutron
+  - option: admin_password
+    value: "{{ os_networking_admin_password }}"
+  notify: Restart the Networking services
+
+- name: In the [DEFAULT] section, configure the metadata host
+  ini_file:
+    dest: /etc/neutron/metadata_agent.ini
+    section: DEFAULT
+    option: nova_metadata_ip
+    value: "{{ os_compute_controller_host }}"
+  notify: Restart the Networking services
+
+- name: In the [DEFAULT] section, configure the metadata proxy shared secret
+  ini_file:
+    dest: /etc/neutron/metadata_agent.ini
+    section: DEFAULT
+    option: metadata_proxy_shared_secret
+    value: "{{ os_networking_metadata_secret }}"
+  notify: Restart the Networking services
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/neutron/metadata_agent.ini
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Networking services
+
+# On the controller node, edit the /etc/nova/nova.conf file and complete the following action
+# See compute role
+
+# On the controller node, restart the Compute API service
+# See compute role
+
+# To configure the Open vSwitch (OVS) service
+
+- name: Restart the OVS service
+  service:
+    name: openvswitch-switch
+    state: started
+
+- name: Add the external bridge
+  shell: ovs-vsctl add-br br-ex
+  ignore_errors: yes
+
+- name: Add a port to the external bridge that connects to the physical external network interface
+  shell: ovs-vsctl add-port br-ex {{ os_networking_physical_external_network_interface }}
+  ignore_errors: yes

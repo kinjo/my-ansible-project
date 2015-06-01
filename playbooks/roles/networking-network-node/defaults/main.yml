@@ -1,0 +1,9 @@
+---
+os_networking_admin_password: password
+os_messaging_password: password
+os_messaging_host: controller
+os_identity_host: controller
+os_compute_controller_host: controller
+os_networking_metadata_secret: metadatasecret
+os_networking_physical_external_network_interface: eth3
+os_networking_instance_tunnels_interface_ip_address: 10.0.1.11

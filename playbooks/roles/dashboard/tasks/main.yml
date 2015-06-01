@@ -1,0 +1,51 @@
+---
+# Install and configure
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/install_dashboard.html
+
+# To install the dashboard components
+- name: Install the packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+  - openstack-dashboard
+  - apache2
+  - libapache2-mod-wsgi
+  - memcached
+  - python-memcache
+
+# To configure the dashboard
+# Edit the /etc/openstack-dashboard/local_settings.py file and complete the following actions:
+- name: Configure the dashboard to use OpenStack services on the controller node
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^OPENSTACK_HOST\s*=
+    line: OPENSTACK_HOST = "{{ os_identity_host }}"
+  notify:
+  - Restart the web server
+  - Restart the session storage service
+
+- name: Allow all hosts to access the dashboard
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^ALLOWED_HOSTS\s*=
+    line: ALLOWED_HOSTS = ['*']
+  notify:
+  - Restart the web server
+  - Restart the session storage service
+
+- name: Optionally, configure the time zone
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^TIME_ZONE\s*=
+    line: TIME_ZONE = "Asia/Tokyo"
+  notify:
+  - Restart the web server
+  - Restart the session storage service
+
+# Restart the web server and session storage service
+- meta: flush_handlers

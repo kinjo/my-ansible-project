@@ -1,0 +1,10 @@
+---
+- name: Restart the web server
+  service: 
+    name: apache2
+    state: restarted
+
+- name: Restart the session storage service
+  service: 
+    name: memcached
+    state: restarted

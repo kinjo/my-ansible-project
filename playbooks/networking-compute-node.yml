@@ -1,0 +1,11 @@
+---
+# Install and configure compute node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+- hosts: computes
+  roles:
+  - role: networking-compute-node
+    os_networking_admin_password: "{{ NEUTRON_PASS }}"
+    os_messaging_password: password
+    os_identity_host: controller
+    os_networking_instance_tunnels_interface_ip_address: "{{ INSTANCE_TUNNELS_INTERFACE_IP_ADDRESS }}"
+  sudo: yes

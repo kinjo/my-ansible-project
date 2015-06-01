@@ -1,0 +1,41 @@
+---
+# To configure Compute to use Networking
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+
+- name: In the [DEFAULT] section, configure the APIs and drivers
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: network_api_class
+    value: nova.network.neutronv2.api.API
+  - option: security_group_api
+    value: neutron
+  - option: linuxnet_interface_driver
+    value: nova.network.linux_net.LinuxOVSInterfaceDriver
+  - option: firewall_driver
+    value: nova.virt.firewall.NoopFirewallDriver
+  notify: Restart the Compute service
+
+- name: In the [neutron] section, configure access options
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: neutron
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: url
+    value: http://{{ os_networking_controller_host }}:9696
+  - option: auth_strategy
+    value: keystone
+  - option: admin_auth_url
+    value: http://{{ os_identity_host }}:35357/v2.0
+  - option: admin_tenant_name
+    value: service
+  - option: admin_username
+    value: neutron
+  - option: admin_password
+    value: "{{ os_networking_admin_password }}"
+  notify: Restart the Compute service

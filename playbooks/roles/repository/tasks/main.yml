@@ -1,0 +1,17 @@
+---
+# OpenStack packages
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-prerequisites
+
+# To enable the OpenStack repository
+
+- name: Install the Ubuntu Cloud archive keyring
+  apt:
+    name: ubuntu-cloud-keyring
+
+- name: Install the Ubuntu Cloud archive repository
+  apt_repository:
+    repo: deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/juno main
+  notify: Upgrade the packages
+
+# Upgrade the packages
+- meta: flush_handlers

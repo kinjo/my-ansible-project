@@ -1,0 +1,33 @@
+---
+# External network
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron_initial-external-network.html
+
+# To create the external network
+
+- name: Create the network
+  neutron_network:
+    name: ext-net
+    router_external: yes
+    provider_physical_network: external
+    provider_network_type: flat
+    login_username: admin
+    login_password: "{{ os_tenant_admin_password }}"
+    login_tenant_name: admin
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- name: Create the subnet
+  neutron_subnet:
+    name: ext-subnet
+    network_name: ext-net
+    allocation_pool_start: "{{ os_tenant_ext_subnet_allocation_pool_start }}"
+    allocation_pool_end: "{{ os_tenant_ext_subnet_allocation_pool_end }}"
+    enable_dhcp: no
+    gateway_ip: "{{ os_tenant_ext_subnet_gateway_ip }}"
+    cidr: "{{ os_tenant_ext_subnet_cidr }}"
+    login_username: admin
+    login_password: "{{ os_tenant_admin_password }}"
+    login_tenant_name: admin
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- pause:
+    seconds: 30

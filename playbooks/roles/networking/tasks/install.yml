@@ -1,0 +1,199 @@
+---
+# To configure the Networking server component
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-controller-node.html
+
+
+- name: install the Networking components
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - neutron-server
+  - neutron-plugin-ml2
+  - python-neutronclient
+
+# To configure the Networking server component
+
+- name: In the [database] section, configure database access
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: database
+    option: connection
+    value: mysql://neutron:{{ os_networking_database_password }}@controller/neutron
+  notify: Restart the Networking service
+
+- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: rpc_backend
+    value: rabbit
+  - option: rabbit_host
+    value: "{{ os_messaging_host }}"
+  - option: rabbit_password
+    value: "{{ os_messaging_password }}"
+  notify: Restart the Networking service
+
+- name: In the [DEFAULT] and [keystone_authtoken] sections, configure Identity service access
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: DEFAULT
+    option: auth_strategy
+    value: keystone
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: identity_uri
+    value: http://{{ os_identity_host }}:35357
+  - section: keystone_authtoken
+    option: admin_tenant_name
+    value: service
+  - section: keystone_authtoken
+    option: admin_user
+    value: neutron
+  - section: keystone_authtoken
+    option: admin_password
+    value: "{{ os_networking_admin_password }}"
+  notify: Restart the Networking service
+
+- name: In the [DEFAULT] section, enable the Modular Layer 2 (ML2) plug-in, router service, and overlapping IP addresses
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: core_plugin
+    value: ml2
+  - option: service_plugins
+    value: router
+  - option: allow_overlapping_ips
+    value: True
+  notify: Restart the Networking service
+
+- name: Replace SERVICE_TENANT_ID with the service tenant identifier
+  shell: keystone tenant-get service | awk '/ id / {print $4}'
+  environment:
+    OS_SERVICE_ENDPOINT: http://{{ os_identity_host }}:35357/v2.0
+    OS_SERVICE_TOKEN: "{{ os_identity_admin_token }}"
+  register: SERVICE_TENANT_ID
+
+- name: In the [DEFAULT] section, configure Networking to notify Compute of network topology changes
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: notify_nova_on_port_status_changes
+    value: True
+  - option: notify_nova_on_port_data_changes
+    value: True
+  - option: nova_url
+    value: http://{{ os_compute_controller_host }}:8774/v2
+  - option: nova_admin_auth_url
+    value: http://{{ os_identity_host }}:35357/v2.0
+  - option: nova_region_name
+    value: regionOne
+  - option: nova_admin_username
+    value: nova
+  - option: nova_admin_tenant_id
+    value: "{{ SERVICE_TENANT_ID.stdout }}"
+  - option: nova_admin_password
+    value: "{{ os_compute_admin_password }}"
+  notify: Restart the Networking service
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Networking service
+
+# To configure the Modular Layer 2 (ML2) plug-in
+
+- name:  the [ml2] section, enable the flat and generic routing encapsulation (GRE) network type drivers, GRE tenant networks, and the OVS mechanism driver
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ml2
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: type_drivers
+    value: flat,gre
+  - option: tenant_network_types
+    value: gre
+  - option: mechanism_drivers
+    value: openvswitch
+  notify: Restart the Networking service
+
+- name: In the [ml2_type_gre] section, configure the tunnel identifier (id) range
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: ml2
+    option: tunnel_id_ranges
+    value: 1:1000
+  notify: Restart the Networking service
+
+- name: In the [securitygroup] section, enable security groups, enable ipset, and configure the OVS iptables firewall driver
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    section: securitygroup
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: enable_security_group
+    value: True
+  - option: enable_ipset
+    value: True
+  - option: firewall_driver
+    value: neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+  notify: Restart the Networking service
+
+# To configure Compute to use Networking
+
+- name: In the [DEFAULT] section, configure the APIs and drivers
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: network_api_class
+    value: nova.network.neutronv2.api.API
+  - option: security_group_api
+    value: neutron
+  - option: linuxnet_interface_driver
+    value: nova.network.linux_net.LinuxOVSInterfaceDriver
+  - option: firewall_driver
+    value: nova.virt.firewall.NoopFirewallDriver
+  notify: Restart the Compute services
+
+- name: In the [neutron] section, configure access options
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: neutron
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: url
+    value: http://{{ os_networking_controller_host }}:9696
+  - option: auth_strategy
+    value: keystone
+  - option: admin_auth_url
+    value: http://{{ os_identity_host }}:35357/v2.0
+  - option: admin_tenant_name
+    value: service
+  - option: admin_username
+    value: neutron
+  - option: admin_password
+    value: "{{ os_networking_admin_password }}"
+  notify: Restart the Compute services

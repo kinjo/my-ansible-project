@@ -1,0 +1,26 @@
+---
+# Create tenants, users, and roles
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-users.html
+- include: tenants.yml
+- include: users.yml
+- include: roles.yml
+
+# Create OpenStack client environment scripts
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-client-environment-scripts.html
+- include: openrc.yml
+
+# Upload the image to the Image Service
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-verify.html
+- include: image.yml
+
+# External network
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron_initial-external-network.html
+- include: external-network.yml
+
+# Tenant network
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron_initial-tenant-network.html
+- include: tenant-network.yml
+
+# To create a router on the tenant network and attach the external and tenant networks to it
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron_initial-tenant-network.html
+- include: router.yml

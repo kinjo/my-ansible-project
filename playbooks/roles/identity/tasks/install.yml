@@ -1,0 +1,62 @@
+---
+# To install and configure the components
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+
+# Run the following shell to install the packages
+
+- name: install the packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - keystone
+  - python-keystoneclient
+
+# Edit the /etc/keystone/keystone.conf file and complete the following actions:
+
+- name: In the [DEFAULT] section, define the value of the initial administration token
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: DEFAULT
+    option: admin_token
+    value: "{{ os_identity_admin_token }}"
+  notify:
+  - Restart the Identity service
+  - Wait until restarting
+
+- name: In the [database] section, configure database access
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: database
+    option: connection
+    value: mysql://keystone:{{ os_identity_database_password }}@{{ os_database_host }}/keystone
+  notify:
+  - Restart the Identity service
+  - Wait until restarting
+
+- name: In the [token] section, configure the UUID token provider and SQL driver
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: token
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: provider
+    value: keystone.token.providers.uuid.Provider
+  - option: driver
+    value: keystone.token.persistence.backends.sql.Token
+  notify:
+  - Restart the Identity service
+  - Wait until restarting
+
+- name: In the [revoke] section, configure the SQL revocation driver
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: revoke
+    option: verbose
+    value: True
+  notify:
+  - Restart the Identity service
+  - Wait until restarting
+
+- name: Populate the Identity service database
+  shell: su -s /bin/sh -c "keystone-manage db_sync" keystone

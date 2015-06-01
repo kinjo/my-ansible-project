@@ -1,0 +1,8 @@
+---
+os_database_root_password: password
+os_database_host: password
+os_image_database_password: password
+os_image_admin_password: password
+os_identity_admin_token: admintoken
+os_identity_host: controller
+os_image_host: controller

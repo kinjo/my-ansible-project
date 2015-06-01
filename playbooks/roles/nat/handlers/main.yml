@@ -1,0 +1,6 @@
+---
+- name: Implement the changes
+  shell: sysctl -p
+
+- name: Reload iptables.rules
+  shell: /etc/network/if-pre-up.d/iptables_start

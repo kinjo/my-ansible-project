@@ -1,0 +1,10 @@
+---
+# Install and configure controller node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+- include: prerequisites.yml
+- include: install.yml
+- include: finalize.yml
+
+# On the controller node, edit the /etc/nova/nova.conf file and complete the following action:
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+- include: metadata-agent.yml

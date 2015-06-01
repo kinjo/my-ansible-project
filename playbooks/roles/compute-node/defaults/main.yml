@@ -1,0 +1,8 @@
+---
+os_messaging_password: password
+os_messaging_host: controller
+os_compute_admin_password: password
+os_identity_host: controller
+os_compute_my_ip: 10.0.0.31
+os_image_host: controller
+os_compute_novncproxy_host: 10.0.0.11

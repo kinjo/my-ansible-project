@@ -1,0 +1,34 @@
+---
+# Database
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-database
+- name: Install the packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - mariadb-server
+  - python-mysqldb
+
+- name: set the bind-address key
+  lineinfile:
+    dest: /etc/mysql/my.cnf
+    regexp: ^bind-address.*
+    line: bind-address = 0.0.0.0
+  notify: Restart the database service
+
+- name: In the [mysqld] section, set the following keys to enable useful options and the UTF-8 character set
+  lineinfile:
+    dest: /etc/mysql/my.cnf
+    insertafter: ^\[mysqld\]
+    line: "{{ item }}"
+  with_items:
+  - default-storage-engine = innodb
+  - innodb_file_per_table
+  - collation-server = utf8_general_ci
+  - init-connect = 'SET NAMES utf8'
+  - character-set-server = utf8
+  notify: Restart the database service
+
+- include: mysql_secure_installation.yml
+
+# Restart the database service
+- meta: flush_handlers

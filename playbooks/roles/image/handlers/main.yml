@@ -1,0 +1,15 @@
+---
+- name: Restart the Image Service services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+  - glance-registry
+  - glance-api
+
+- name: Wait until rebooting
+  wait_for:
+    port: "{{ item }}"
+  with_items:
+  - 9191
+  - 9292

@@ -1,0 +1,8 @@
+---
+# Database
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-database
+- hosts: controller
+  roles:
+  - role: database
+    os_database_root_password: "{{ database_password }}"
+  sudo: yes

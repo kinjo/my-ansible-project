@@ -1,0 +1,6 @@
+---
+# To finalize installation
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+
+# Restart the Networking services
+- meta: flush_handlers
