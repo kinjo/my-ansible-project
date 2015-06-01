@@ -1,0 +1,11 @@
+---
+# To finalize installation
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-install.html
+
+# Restart the Image Service services
+- meta: flush_handlers
+
+- name: remove the SQLite database file
+  file:
+    path: /var/lib/glance/glance.sqlite
+    state: absent

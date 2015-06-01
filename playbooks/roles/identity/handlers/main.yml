@@ -1,0 +1,12 @@
+---
+- name: Restart the Identity service
+  service:
+    name: keystone
+    state: restarted
+
+- name: Wait until restarting
+  wait_for:
+    port: "{{ item }}"
+  with_items:
+  - 35357
+  - 5000

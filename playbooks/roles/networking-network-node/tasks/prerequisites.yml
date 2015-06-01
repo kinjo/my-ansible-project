@@ -1,0 +1,40 @@
+---
+# To configure networking
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-neutron-networking-network-node
+#
+#
+# 3. The external interface uses a special configuration without an IP address
+# assigned to it. Configure the third interface as the external interface
+
+- name: Place a script to edit the /etc/network/interfaces file
+  template:
+    src: edit-interfaces.sh
+    dest: /tmp/edit-interfaces.sh
+  register: st
+
+- name: Edit the /etc/network/interfaces file to contain the following
+  shell: bash /tmp/edit-interfaces.sh
+  when: st|changed
+  notify:
+  - Reboot the system to activate the changes
+  - Wait until rebooting
+
+# Install and configure network node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+
+# To configure prerequisites
+
+- name: Edit the /etc/sysctl.conf file to contain the following options
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+  - regexp: ^#net\.ipv4\.ip_forward=
+    line: net.ipv4.ip_forward=1
+  - regexp: ^#net\.ipv4\.conf\.all\.rp_filter=
+    line: net.ipv4.conf.all.rp_filter=0
+  - regexp: ^#net\.ipv4\.conf\.default\.rp_filter=
+    line: net.ipv4.conf.default.rp_filter=0
+  notify: Implement the changes

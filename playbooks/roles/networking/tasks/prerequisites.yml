@@ -1,0 +1,52 @@
+---
+# To configure prerequisites
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-controller-node.html
+
+# To create the database, complete these steps
+
+- name: Create the neutron database
+  mysql_db:
+    name: neutron
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+
+- name: Grant proper access to the neutron database
+  mysql_user:
+    name: neutron
+    host: "{{ item }}"
+    password: "{{ os_compute_database_password }}"
+    priv: neutron.*:ALL
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+  with_items:
+  - localhost
+  - "%"
+
+# To create the service credentials, complete these steps
+
+- name: Create the neutron user
+  keystone_user:
+    user: neutron
+    tenant: service
+    password: "{{ os_networking_admin_password }}"
+    token: "{{ os_identity_admin_token }}"
+
+- name: Add the admin role to the neutron user
+  keystone_user:
+    user: neutron
+    role: admin
+    tenant: service
+    token: "{{ os_identity_admin_token }}"
+
+# Create the Networking service API endpoints:
+
+- name: Create the neutron service entity
+  keystone_service:
+    name: neutron
+    type: network
+    description: OpenStack Networking
+    token: "{{ os_identity_admin_token }}"
+    public_url: http://{{ os_networking_controller_host }}:9696
+    internal_url: http://{{ os_networking_controller_host }}:9696
+    admin_url: http://{{ os_networking_controller_host }}:9696
+    region: regionOne

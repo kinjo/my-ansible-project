@@ -1,0 +1,8 @@
+---
+# Install and configure
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/install_dashboard.html
+- hosts: controller
+  roles:
+  - role: dashboard
+    os_identity_host: controller
+  sudo: yes

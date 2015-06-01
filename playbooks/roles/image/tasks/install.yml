@@ -1,0 +1,130 @@
+---
+# To install and configure the Image Service components
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-install.html
+
+- name: Install the packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - glance
+  - python-glanceclient
+
+# Edit the /etc/glance/glance-api.conf file and complete the following actions
+
+- name: In the [database] section, configure database access
+  ini_file:
+    dest: /etc/glance/glance-api.conf
+    section: database
+    option: connection
+    value: mysql://glance:{{ os_image_database_password }}@{{ os_database_host }}/glance
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: In the [keystone_authtoken] and [paste_deploy] sections, configure Identity service access
+  ini_file:
+    dest: /etc/glance/glance-api.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: identity_uri
+    value: http://{{ os_identity_host }}:35357
+  - section: keystone_authtoken
+    option: admin_tenant_name
+    value: service
+  - section: keystone_authtoken
+    option: admin_user
+    value: glance
+  - section: keystone_authtoken
+    option: admin_password
+    value: "{{ os_image_admin_password }}"
+  - section: paste_deploy
+    option: flavor
+    value: keystone
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: the [glance_store] section, configure the local file system store and location of image files
+  ini_file:
+    dest: /etc/glance/glance-api.conf
+    section: glance_store
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: default_store
+    value: file
+  - option: filesystem_store_datadir
+    value: /var/lib/glance/images/
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: In the [DEFAULT] section, configure the noop notification driver to disable notifications because they only pertain to the optional Telemetry service
+  ini_file:
+    dest: /etc/glance/glance-api.conf
+    section: glance_store
+    option: notification_driver
+    value: noop
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+# Edit the /etc/glance/glance-registry.conf file and complete the following actions
+
+- name: In the [database] section, configure database access
+  ini_file:
+    dest: /etc/glance/glance-registry.conf
+    section: database
+    option: connection
+    value: mysql://glance:{{ os_image_admin_password }}@{{ os_database_host }}/glance
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: In the [keystone_authtoken] and [paste_deploy] sections, configure Identity service access
+  ini_file:
+    dest: /etc/glance/glance-registry.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: identity_uri
+    value: http://{{ os_identity_host }}:35357
+  - section: keystone_authtoken
+    option: admin_tenant_name
+    value: service
+  - section: keystone_authtoken
+    option: admin_user
+    value: glance
+  - section: keystone_authtoken
+    option: admin_password
+    value: "{{ os_image_admin_password }}"
+  - section: paste_deploy
+    option: flavor
+    value: keystone
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: In the [DEFAULT] section, configure the noop notification driver to disable notifications because they only pertain to the optional Telemetry service
+  ini_file:
+    dest: /etc/glance/glance-registry.conf
+    section: DEFAULT
+    option: notification_driver
+    value: noop
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: Populate the Image Service database
+  shell: su -s /bin/sh -c "glance-manage db_sync" glance

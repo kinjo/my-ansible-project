@@ -1,0 +1,23 @@
+---
+# Messaging server
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-messaging-server
+
+# To install the RabbitMQ message broker service
+- name: install the RabbitMQ message broker service
+  apt:
+    name: rabbitmq-server
+    update_cache: yes
+    cache_valid_time: 3600
+
+# To simplify installation of your test environment, we recommend that you use
+# this account, but change the password for it.
+- name: change the password
+  rabbitmq_user:
+    user: guest
+    password: "{{ os_messaging_password }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    tags: administrator
+    force: yes

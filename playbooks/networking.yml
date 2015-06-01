@@ -1,0 +1,19 @@
+---
+# Install and configure controller node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-controller-node.html
+- hosts: controller
+  roles:
+  - role: networking
+    os_database_root_password: "{{ database_password }}"
+    os_networking_admin_password: "{{ NEUTRON_PASS }}"
+    os_messaging_password: "{{ RABBIT_PASS }}"
+    os_messaging_host: controller
+    os_networking_database_password: "{{ NEUTRON_DBPASS }}"
+    os_compute_database_password: "{{ NOVA_DBPASS }}"
+    os_identity_admin_token: "{{ ADMIN_TOKEN }}"
+    os_identity_host: controller
+    os_compute_controller_host: controller
+    os_networking_controller_host: network
+    os_tenant_admin_password: "{{ ADMIN_PASS }}"
+    os_compute_admin_password: "{{ NOVA_PASS }}"
+  sudo: yes

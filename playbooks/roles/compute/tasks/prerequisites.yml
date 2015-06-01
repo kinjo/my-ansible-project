@@ -1,0 +1,50 @@
+---
+# To configure prerequisites
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+
+# To create the database, complete these steps
+
+- name: Create the nova database
+  mysql_db:
+    name: nova
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+
+- name: Grant proper access to the nova database
+  mysql_user:
+    name: nova
+    host: "{{ item }}"
+    password: "{{ os_compute_database_password }}"
+    priv: nova.*:ALL
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+  with_items:
+  - localhost
+  - "%"
+
+# To create the service credentials, complete these steps
+
+- name: Create the nova user
+  keystone_user:
+    user: nova
+    tenant: service
+    password: "{{ os_compute_admin_password }}"
+    token: "{{ os_identity_admin_token }}"
+
+- name: Add the admin role to the nova user
+  keystone_user:
+    user: nova
+    role: admin
+    tenant: service
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the Compute service entity
+  keystone_service:
+    name: nova
+    type: compute
+    description: OpenStack Compute
+    token: "{{ os_identity_admin_token }}"
+    public_url: http://{{ os_compute_controller_host }}:8774/v2/%(tenant_id)s
+    internal_url: http://{{ os_compute_controller_host }}:8774/v2/%(tenant_id)s
+    admin_url: http://{{ os_compute_controller_host }}:8774/v2/%(tenant_id)s
+    region: regionOne

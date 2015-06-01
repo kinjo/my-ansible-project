@@ -1,0 +1,110 @@
+---
+# To install and configure Compute controller components
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+
+- name: Install the packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+  - nova-api
+  - nova-cert
+  - nova-conductor
+  - nova-consoleauth
+  - nova-novncproxy
+  - nova-scheduler
+  - python-novaclient
+
+# Edit the /etc/nova/nova.conf file and complete the following actions
+
+- name: In the [database] section, configure database access
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: database
+    option: connection
+    value: mysql://nova:{{ os_compute_database_password }}@{{ os_database_host }}/nova
+  notify: Restart the Compute services
+
+- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: rpc_backend
+    value: rabbit
+  - option: rabbit_host
+    value: "{{ os_messaging_host }}"
+  - option: rabbit_password
+    value: "{{ os_messaging_password }}"
+  notify: Restart the Compute services
+
+- name: In the [DEFAULT] and [keystone_authtoken] sections, configure Identity service access
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: DEFAULT
+    option: auth_strategy
+    value: keystone
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: identity_uri
+    value: http://{{ os_identity_host }}:35357
+  - section: keystone_authtoken
+    option: auth_uri
+    value: http://{{ os_identity_host }}:5000/v2.0
+  - section: keystone_authtoken
+    option: admin_tenant_name
+    value: service
+  - section: keystone_authtoken
+    option: admin_user
+    value: nova
+  - section: keystone_authtoken
+    option: admin_password
+    value: "{{ os_compute_admin_password }}"
+  notify: Restart the Compute services
+
+- name: In the [DEFAULT] section, configure the my_ip option to use the management interface IP address of the controller node
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: my_ip
+    value: "{{ os_compute_my_ip }}"
+  notify: Restart the Compute services
+
+- name: In the [DEFAULT] section, configure the VNC proxy to use the management interface IP address of the controller node
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - option: vncserver_listen
+    value: "{{ os_compute_my_ip }}"
+  - option: vncserver_proxyclient_address
+    value: "{{ os_compute_my_ip }}"
+  notify: Restart the Compute services
+
+- name: In the [glance] section, configure the location of the Image Service
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: glance
+    option: host
+    value: "{{ os_image_host }}"
+  notify: Restart the Compute services
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: DEFAULT
+    option: verbose
+    value: True
+  notify: Restart the Compute services
+
+- name: Populate the Compute database
+  shell: su -s /bin/sh -c "nova-manage db sync" nova

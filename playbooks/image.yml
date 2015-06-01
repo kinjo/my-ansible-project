@@ -1,0 +1,13 @@
+---
+# Install and configure
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_glance.html
+- hosts: controller
+  roles:
+  - role: image
+    os_database_root_password: "{{ database_password }}"
+    os_image_database_password: "{{ GLANCE_DBPASS }}"
+    os_image_admin_password: "{{ GLANCE_PASS }}"
+    os_identity_host: controller
+    os_image_host: controller
+    os_database_host: controller
+  sudo: yes

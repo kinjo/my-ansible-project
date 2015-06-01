@@ -1,0 +1,27 @@
+---
+- name: Reboot the system to activate the changes
+  shell: reboot
+
+- name: Wait until rebooting
+  local_action: wait_for
+  args:
+    host: "{{ ansible_ssh_host }}"
+    port: "{{ ansible_ssh_port | default(22) }}"
+    delay: 30
+
+- name: Implement the changes
+  shell: sysctl -p
+
+- name: Restart the Networking services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+  - neutron-plugin-openvswitch-agent
+  - neutron-l3-agent
+  - neutron-dhcp-agent
+  - neutron-metadata-agent
+  - openvswitch-switch
+
+- name: Kill any existing dnsmasq processes
+  shell: pkill dnsmasq

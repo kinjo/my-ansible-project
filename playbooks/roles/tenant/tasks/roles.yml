@@ -1,0 +1,11 @@
+---
+# Create tenants, users, and roles
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-users.html
+
+# Create an administrative tenant, user, and role for administrative operations in your environment
+- name: Create the admin role
+  keystone_user:
+    user: admin
+    role: admin
+    tenant: admin
+    token: "{{ os_identity_admin_token }}"

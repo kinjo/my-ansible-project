@@ -1,0 +1,12 @@
+---
+# Install and configure a compute node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+- hosts: computes
+  roles:
+  - role: compute-node
+    os_messaging_password: password
+    os_messaging_host: controller
+    os_compute_admin_password: "{{ NOVA_PASS }}"
+    os_identity_host: controller
+    os_compute_my_ip: "{{ ansible_ssh_host }}"
+  sudo: yes

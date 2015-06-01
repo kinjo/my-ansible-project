@@ -1,1 +1,10 @@
-localhost       ansible_ssh_host=localhost ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+controller  ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+network     ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+compute1    ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+router      ansible_ssh_host=10.0.0.254 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+
+[computes]
+compute1
+
+[real-servers]
+allinone  ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant

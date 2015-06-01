@@ -1,0 +1,19 @@
+---
+# To finalize installation
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+
+- name: Edit the [libvirt] section in the /etc/nova/nova-compute.conf file
+  ini_file:
+    dest: /etc/nova/nova-compute.conf
+    section: libvirt
+    option: virt_type
+    value: qemu
+  notify: Restart the Compute service
+
+# Restart the Compute service
+- meta: flush_handlers
+
+- name: remove the SQLite database file
+  file:
+    path: /var/lib/nova/nova.sqlite
+    state: absent

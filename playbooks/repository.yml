@@ -1,0 +1,7 @@
+---
+# OpenStack packages
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-prerequisites
+- hosts: real-servers
+  roles:
+  - role: repository
+  sudo: yes

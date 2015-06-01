@@ -1,0 +1,18 @@
+---
+# Install and configure compute node
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+
+# To configure prerequisites
+
+- name: Edit the /etc/sysctl.conf file to contain the following options
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+  - regexp: ^#net\.ipv4\.conf\.all\.rp_filter=
+    line: net.ipv4.conf.all.rp_filter=0
+  - regexp: ^#net\.ipv4\.conf\.default\.rp_filter=
+    line: net.ipv4.conf.default.rp_filter=0
+  notify: Implement the changes

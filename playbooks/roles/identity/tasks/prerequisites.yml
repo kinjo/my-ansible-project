@@ -1,0 +1,21 @@
+---
+# To configure prerequisites
+# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+
+- name: Create the keystone database
+  mysql_db:
+    name: keystone
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+
+- name: Grant proper access to the keystone database
+  mysql_user:
+    name: keystone
+    host: "{{ item }}"
+    password: "{{ os_identity_database_password }}"
+    priv: keystone.*:ALL
+    login_user: root
+    login_password: "{{ os_database_root_password }}"
+  with_items:
+  - localhost
+  - "%"

@@ -1,0 +1,12 @@
+---
+os_database_root_password: password
+os_networking_admin_password: password
+os_messaging_password: password
+os_messaging_host: controller
+os_networking_database_password: password
+os_compute_database_password: password
+os_identity_admin_token: admintoken
+os_identity_host: controller
+os_compute_controller_host: controller
+os_networking_controller_host: network
+os_compute_admin_password: password 
