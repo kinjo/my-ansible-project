@@ -1,4 +1,7 @@
 ---
+- name: Implement the changes
+  shell: sysctl -p
+
 - name: Restart the OVS service
   service:
     name: "{{ item }}"
