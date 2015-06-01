@@ -3,4 +3,4 @@ os_networking_admin_password: password
 os_messaging_password: password
 os_messaging_host: controller
 os_identity_host: controller
-os_networking_instance_tunnels_interface_ip_address: 10.0.1.11 
+os_networking_instance_tunnels_interface_ip_address: "{{ tunnels_interface_ip }}"

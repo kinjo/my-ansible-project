@@ -19,39 +19,42 @@ following.
 
 The architecture of the environment built as a result of the tasks is below.
 
-                                            VirtualBox NAT Network(for Vagrant)
-    ----------+----------------------------+-----------------------------------
-              |                            |
-          eth0|                        eth0|
-    +---------+------------+   +-----------+------------+
-    |HOST: ansible(512MB)  |   |HOST: allinone(4GB mem) |
-    | Acts as router       |   | Acts as                |
-    |                      |   |  controller/network/   |
-    |                      |   |  compute node          |
-    +----------------------+   +------------------------+
-    |ROLES:                |   |ROLES:                  |
-    | nat(for external net)|   | ntp                    |
-    +----+---------+-------+   | database               |
-     eth1|     eth2|           | messaging              |
-     .254|       .2|           | identity               |
-         |         |           | image                  |
-         |         |           | compute                |
-         |         |           | compute-node           |
-         |         |           | networking             |
-         |         |           | networking-network-node|
-         |         |           | networking-compute-node|
-         |         |           | dashboard              |
-         |         |           | tenant                 |
-         |         |           +---+------+-----+-------+
-         |         |           eth1|  eth2| eth3|    VirtualBox Private Network
-         |         |            .11|   .11|     |  (for Tunnel net) 10.0.1.0/24
-         |         |               |  ----+-----)------------------------------
-         |         |               |            |    VirtualBox Private Network
-         |         |               |            | (External net) 203.0.113.0/24
-         |     ----+---------------)------------+------------------------------
-         |                         |                 VirtualBox Private Network
-         |                         |               (Management net) 10.0.0.0/24
-    -----+-------------------------+-------------------------------------------
+                                                 VirtualBox NAT Network(for Vagrant)
+    ----------+-----------------------+-------------------------+-------------
+              |                       |                         |
+          eth0|                   eth0|                     eth0|
+    +---------+----------++-----------+------------++-----------+------------+
+    |HOST: ansible(512MB)||HOST: allinone(4GB)     ||HOST: compute2(4GB)     |
+    | Acts as router     || Acts as                || Acts as                |
+    |                    ||  controller/network/   ||  compute node          |
+    |                    ||  compute node          ||                        |
+    +--------------------++------------------------++------------------------+
+    |ROLES:              ||ROLES:                  ||ROLES:                  |
+    | nat(for external   || ntp                    || compute-node           |
+    |  net)              || database               || networking-compute-node|
+    +----+---------+-----+| messaging              ||                        |
+     eth1|     eth2|      | identity               ||                        |
+     .254|       .2|      | image                  ||                        |
+         |         |      | compute                ||                        |
+         |         |      | compute-node           ||                        |
+         |         |      | networking             ||                        |
+         |         |      | networking-network-node||                        |
+         |         |      | networking-compute-node||                        |
+         |         |      | dashboard              ||                        |
+         |         |      | tenant                 ||                        |
+         |         |      +---+------+-----+-------++-+--------+-------------+
+         |         |      eth1|  eth2| eth3|          |        |
+         |         |       .11|   .11|     |          |        |
+         |         |          |      |     |          |        |
+         |         |          |  ----+-----)----------)--------+----------
+         |         |          |            |          |   VirtualBox Private Network
+         |         |          |            |          | (for Tunnel net) 10.0.1.0/24
+         |     ----+----------)------------+----------)-------------------
+         |                    |                       |   VirtualBox Private Network
+         |                    |                       |(External net) 203.0.113.0/24
+    -----+--------------------+-----------------------+-------------------
+                                                          VirtualBox Private Network
+                                                        (Management net) 10.0.0.0/24
 
 Usage
 ---
