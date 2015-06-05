@@ -1,6 +1,6 @@
 ---
 # To install the Networking components
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
 
 - name: install the Networking components
   apt:
@@ -10,19 +10,26 @@
   - neutron-plugin-openvswitch-agent
 
 # To configure the Networking common components
+# Edit the /etc/neutron/neutron.conf file and complete the following actions
 
-- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+- name: In the [DEFAULT] and [oslo_messaging_rabbit] sections, configure RabbitMQ message queue access
   ini_file:
     dest: /etc/neutron/neutron.conf
-    section: DEFAULT
+    section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-  - option: rpc_backend
+  - section: DEFAULT
+    option: rpc_backend
     value: rabbit
-  - option: rabbit_host
-    value: "{{ os_messaging_host }}"
-  - option: rabbit_password
+  - section: oslo_messaging_rabbit
+    option: rabbit_host
+    value: controller
+  - section: oslo_messaging_rabbit
+    option: rabbit_userid
+    value: openstack
+  - section: oslo_messaging_rabbit
+    option: rabbit_password
     value: "{{ os_messaging_password }}"
   notify:
   - Restart the OVS service
@@ -40,18 +47,27 @@
     value: keystone
   - section: keystone_authtoken
     option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://controller:5000
   - section: keystone_authtoken
-    option: identity_uri
-    value: http://{{ os_identity_host }}:35357
+    option: auth_url
+    value: http://controller:35357
   - section: keystone_authtoken
-    option: admin_tenant_name
+    option: auth_plugin
+    value: password
+  - section: keystone_authtoken
+    option: project_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: user_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: project_name
     value: service
   - section: keystone_authtoken
-    option: admin_user
+    option: username
     value: neutron
   - section: keystone_authtoken
-    option: admin_password
+    option: password
     value: "{{ os_networking_admin_password }}"
   notify:
   - Restart the OVS service
@@ -85,8 +101,9 @@
   - Restart the Open vSwitch (OVS) agent
 
 # To configure the Modular Layer 2 (ML2) plug-in
+# Edit the /etc/neutron/plugins/ml2/ml2_conf.ini file and complete the following actions
 
-- name:  the [ml2] section, enable the flat and generic routing encapsulation (GRE) network type drivers, GRE tenant networks, and the OVS mechanism driver
+- name: In the [ml2] section, enable the flat, VLAN, generic routing encapsulation (GRE), and virtual extensible LAN (VXLAN) network type drivers, GRE tenant networks, and the OVS mechanism driver
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ml2
@@ -94,7 +111,7 @@
     value: "{{ item.value }}"
   with_items:
   - option: type_drivers
-    value: flat,gre
+    value: flat,vlan,gre,vxlan
   - option: tenant_network_types
     value: gre
   - option: mechanism_drivers
@@ -103,17 +120,7 @@
   - Restart the OVS service
   - Restart the Open vSwitch (OVS) agent
 
-- name: In the [ml2_type_flat] section, configure the external flat provider network
-  ini_file:
-    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
-    section: ml2_type_flat
-    option: flat_networks
-    value: external
-  notify:
-  - Restart the OVS service
-  - Restart the Open vSwitch (OVS) agent
-
-- name: the [ml2_type_gre] section, configure the tunnel identifier (id) range
+- name: In the [ml2_type_gre] section, configure the tunnel identifier (id) range
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ml2_type_gre
@@ -140,17 +147,12 @@
   - Restart the OVS service
   - Restart the Open vSwitch (OVS) agent
 
-- name: In the [ovs] section, enable tunnels, configure the local tunnel endpoint, and map the external flat provider network to the br-ex external network bridge
+- name: In the [ovs] section, enable tunnels and configure the local tunnel endpoint
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ovs
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-  with_items:
-  - option: local_ip
+    option: local_ip
     value: "{{ os_networking_instance_tunnels_interface_ip_address }}"
-  - option: enable_tunneling
-    value: True
   notify:
   - Restart the OVS service
   - Restart the Open vSwitch (OVS) agent
@@ -166,7 +168,6 @@
   - Restart the Open vSwitch (OVS) agent
 
 # To configure the Open vSwitch (OVS) service
-- meta: flush_handlers
 
 # To configure Compute to use Networking
-# See compute-node role
+# See networking.yml in the compute-node role

@@ -1,0 +1,86 @@
+---
+# Create initial networks
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-initial-networks.html
+
+# External network
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron_initial-external-network.html
+- name: Create the network
+  neutron_network:
+    name: ext-net
+    router_external: yes
+    provider_physical_network: external
+    provider_network_type: flat
+    login_username: admin
+    login_password: "{{ os_tenant_admin_password }}"
+    login_tenant_name: admin
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- name: Create the subnet
+  neutron_subnet:
+    name: ext-subnet
+    network_name: ext-net
+    allocation_pool_start: "{{ os_tenant_ext_subnet_allocation_pool_start }}"
+    allocation_pool_end: "{{ os_tenant_ext_subnet_allocation_pool_end }}"
+    enable_dhcp: no
+    gateway_ip: "{{ os_tenant_ext_subnet_gateway_ip }}"
+    cidr: "{{ os_tenant_ext_subnet_cidr }}"
+    login_username: admin
+    login_password: "{{ os_tenant_admin_password }}"
+    login_tenant_name: admin
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- pause:
+    seconds: 30
+
+# Tenant network
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron_initial-tenant-network.html
+- name: Create the network
+  neutron_network:
+    name: demo-net
+    login_username: demo
+    login_password: "{{ os_tenant_demo_password }}"
+    login_tenant_name: demo
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- name: Create the subnet
+  neutron_subnet:
+    name: demo-subnet
+    network_name: demo-net
+    gateway_ip: 192.168.1.1
+    dns_nameservers: "{{ os_tenant_subnet_nameservers }}"
+    cidr: 192.168.1.0/24
+    login_username: demo
+    login_password: "{{ os_tenant_demo_password }}"
+    login_tenant_name: demo
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- pause:
+    seconds: 30
+
+# To create a router on the tenant network and attach the external and tenant networks to it
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron_initial-tenant-network.html
+- name: Create the router
+  neutron_router:
+    name: demo-router
+    login_username: demo
+    login_password: "{{ os_tenant_demo_password }}"
+    login_tenant_name: demo
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- name: Attach the router to the external network by setting it as the gateway
+  neutron_router_gateway:
+    router_name: demo-router
+    network_name: ext-net
+    login_username: admin
+    login_password: "{{ os_tenant_admin_password }}"
+    login_tenant_name: admin
+    auth_url: http://{{ os_identity_host }}:5000/v2.0
+
+- name: Attach the router to the demo tenant subnet
+  neutron_router_interface:
+    router_name: demo-router
+    subnet_name: demo-subnet
+    login_username: demo
+    login_password: "{{ os_tenant_demo_password }}"
+    login_tenant_name: demo
+    auth_url: http://{{ os_identity_host }}:5000/v2.0

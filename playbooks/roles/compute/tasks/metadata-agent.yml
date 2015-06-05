@@ -1,6 +1,6 @@
 ---
 # On the controller node, edit the /etc/nova/nova.conf file and complete the following action:
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-network-node.html
 
 - name: In the [neutron] section, enable the metadata proxy and configure the secret
   ini_file:
@@ -13,7 +13,7 @@
     value: True
   - option: metadata_proxy_shared_secret
     value: "{{ os_networking_metadata_secret }}"
-  notify: On the controller node, restart the Compute API service
+  notify: Restart the Compute API service
 
 # On the controller node, restart the Compute API service
 - meta: flush_handlers

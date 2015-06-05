@@ -1,11 +1,11 @@
 ---
 # Install and configure network node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-network-node.html
 - hosts: network
   roles:
   - role: networking-network-node
     os_networking_admin_password: "{{ NEUTRON_PASS }}"
-    os_messaging_password: password
+    os_messaging_password: "{{ RABBIT_PASS }}"
     os_messaging_host: controller
     os_identity_host: controller
     os_compute_controller_host: controller

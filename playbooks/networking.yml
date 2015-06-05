@@ -1,6 +1,6 @@
 ---
 # Install and configure controller node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-controller-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-controller-node.html
 - hosts: controller
   roles:
   - role: networking

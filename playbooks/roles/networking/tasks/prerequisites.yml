@@ -1,6 +1,6 @@
 ---
 # To configure prerequisites
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-controller-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-controller-node.html
 
 # To create the database, complete these steps
 
@@ -40,7 +40,7 @@
 
 # Create the Networking service API endpoints:
 
-- name: Create the neutron service entity
+- name: Create the neutron service entity and API endpoint
   keystone_service:
     name: neutron
     type: network

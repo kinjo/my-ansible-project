@@ -1,5 +1,3 @@
 ---
 - name: Restart the Compute service
-  service:
-    name: nova-compute
-    state: restarted
+  shell: service nova-compute restart

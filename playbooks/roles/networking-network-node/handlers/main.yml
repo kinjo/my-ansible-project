@@ -13,15 +13,12 @@
   shell: sysctl -p
 
 - name: Restart the Networking services
-  service:
-    name: "{{ item }}"
-    state: restarted
+  shell: service {{ item }} restart
   with_items:
   - neutron-plugin-openvswitch-agent
   - neutron-l3-agent
   - neutron-dhcp-agent
   - neutron-metadata-agent
-  - openvswitch-switch
 
 - name: Kill any existing dnsmasq processes
   shell: pkill dnsmasq

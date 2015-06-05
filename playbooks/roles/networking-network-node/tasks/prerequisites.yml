@@ -1,8 +1,7 @@
 ---
 # To configure networking
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-neutron-networking-network-node
-#
-#
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-neutron-networking-network-node
+
 # 3. The external interface uses a special configuration without an IP address
 # assigned to it. Configure the third interface as the external interface
 
@@ -24,7 +23,7 @@
 
 # To configure prerequisites
 
-- name: Edit the /etc/sysctl.conf file to contain the following options
+- name: Edit the /etc/sysctl.conf file to contain the following parameters
   lineinfile:
     dest: /etc/sysctl.conf
     regexp: "{{ item.regexp }}"

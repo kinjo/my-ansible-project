@@ -1,5 +1,7 @@
 ---
-# Install and configure
+# To finalize installation
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/install_dashboard.html
-- include: install.yml
-- include: finalize.yml
+
+# Reload the web server configuration
+- meta: flush_handlers
+

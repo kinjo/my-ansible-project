@@ -1,6 +1,6 @@
 ---
 # To install and configure the Image Service components
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-install.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/glance-install.html
 
 - name: Install the packages
   apt:
@@ -30,18 +30,27 @@
   with_items:
   - section: keystone_authtoken
     option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://{{ os_identity_host }}:5000
   - section: keystone_authtoken
-    option: identity_uri
+    option: auth_url
     value: http://{{ os_identity_host }}:35357
   - section: keystone_authtoken
-    option: admin_tenant_name
+    option: auth_plugin
+    value: password
+  - section: keystone_authtoken
+    option: project_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: user_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: project_name
     value: service
   - section: keystone_authtoken
-    option: admin_user
+    option: username
     value: glance
   - section: keystone_authtoken
-    option: admin_password
+    option: password
     value: "{{ os_image_admin_password }}"
   - section: paste_deploy
     option: flavor
@@ -50,7 +59,7 @@
   - Restart the Image Service services
   - Wait until rebooting
 
-- name: the [glance_store] section, configure the local file system store and location of image files
+- name: In the [glance_store] section, configure the local file system store and location of image files
   ini_file:
     dest: /etc/glance/glance-api.conf
     section: glance_store
@@ -68,9 +77,19 @@
 - name: In the [DEFAULT] section, configure the noop notification driver to disable notifications because they only pertain to the optional Telemetry service
   ini_file:
     dest: /etc/glance/glance-api.conf
-    section: glance_store
+    section: DEFAULT
     option: notification_driver
     value: noop
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/glance/glance-api.conf
+    section: DEFAULT
+    option: verbose
+    value: True
   notify:
   - Restart the Image Service services
   - Wait until rebooting
@@ -96,18 +115,27 @@
   with_items:
   - section: keystone_authtoken
     option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://{{ os_identity_host }}:5000
   - section: keystone_authtoken
-    option: identity_uri
+    option: auth_url
     value: http://{{ os_identity_host }}:35357
   - section: keystone_authtoken
-    option: admin_tenant_name
+    option: auth_plugin
+    value: password
+  - section: keystone_authtoken
+    option: project_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: user_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: project_name
     value: service
   - section: keystone_authtoken
-    option: admin_user
+    option: username
     value: glance
   - section: keystone_authtoken
-    option: admin_password
+    option: password
     value: "{{ os_image_admin_password }}"
   - section: paste_deploy
     option: flavor
@@ -122,6 +150,16 @@
     section: DEFAULT
     option: notification_driver
     value: noop
+  notify:
+  - Restart the Image Service services
+  - Wait until rebooting
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/glance/glance-registry.conf
+    section: DEFAULT
+    option: verbose
+    value: True
   notify:
   - Restart the Image Service services
   - Wait until rebooting

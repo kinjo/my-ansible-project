@@ -1,6 +1,6 @@
 ---
 # Install and configure compute node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
 
 # To configure prerequisites
 

@@ -1,6 +1,6 @@
 ---
 # Network Time Protocol (NTP)
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-ntp
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-ntp
 - name: install the NTP service
   apt:
     name: ntp

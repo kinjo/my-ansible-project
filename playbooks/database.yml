@@ -1,6 +1,6 @@
 ---
 # Database
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-database
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-database
 - hosts: controller
   roles:
   - role: database

@@ -1,12 +1,12 @@
 ---
 # Install and configure controller node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-controller-install
 - hosts: controller
   roles:
   - role: compute
     os_database_root_password: "{{ database_password }}"
     os_database_host: controller
-    os_messaging_password: password
+    os_messaging_password: "{{ RABBIT_PASS }}"
     os_messaging_host: controller
     os_compute_database_password: "{{ NOVA_DBPASS }}"
     os_compute_admin_password: "{{ NOVA_PASS }}"
@@ -14,5 +14,7 @@
     os_identity_host: controller
     os_compute_controller_host: controller
     os_compute_my_ip: "{{ ansible_ssh_host }}"
-    os_networking_metadata_secret: metadatasecret
+    os_networking_controller_host: controller
+    os_networking_admin_password: "{{ NEUTRON_PASS }}"
+    os_networking_metadata_secret: "{{ METADATA_SECRET }}"
   sudo: yes

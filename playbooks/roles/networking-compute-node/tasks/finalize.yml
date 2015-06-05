@@ -1,6 +1,6 @@
 ---
 # To finalize installation
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
 
-# Restart the OVS service
+# Restart the Open vSwitch (OVS) agent
 - meta: flush_handlers

@@ -1,18 +1,11 @@
 ---
 # To finalize installation
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-install.html
 
-# Restart the Identity service if needed
+# Restart the Apache HTTP server
 - meta: flush_handlers
 
 - name: remove the SQLite database file
   file: 
     path: /var/lib/keystone/keystone.db
     state: absent
-
-- name: We recommend that you use cron to configure a periodic task that purges expired tokens hourly
-  cron:
-    name: purge expired tokens hourly
-    user: keystone
-    special_time: hourly
-    job: /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1

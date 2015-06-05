@@ -1,55 +1,14 @@
 ---
 # For OpenStack services, this guide uses SERVICE_PASS to reference service
 # account passwords and SERVICE_DBPASS to reference database passwords.
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-security
+#
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-prerequisites
 
 # Root password for the database
 database_password: password
 
-# Password of user guest of RabbitMQ
-RABBIT_PASS: password
-
-# Database password of Identity service
-KEYSTONE_DBPASS: password
-
-# Password of user demo
-DEMO_PASS: password
-
 # Password of user admin
 ADMIN_PASS: password
-
-# Database password for Image Service
-GLANCE_DBPASS: password
-
-# Password of Image Service user glance
-GLANCE_PASS: password
-
-# Database password for Compute service
-NOVA_DBPASS: password
-
-# Password of Compute service user nova
-NOVA_PASS: password
-
-# Database password for the dashboard
-DASH_DBPASS: password
-
-# Database password for the Block Storage service
-CINDER_DBPASS: password
-
-# Password of Block Storage service user cinder
-CINDER_PASS: password
-
-# Database password for the Networking service
-NEUTRON_DBPASS: password
-
-# Password of Networking service user neutron
-NEUTRON_PASS: password
-
-# Database password for the Orchestration service
-HEAT_DBPASS: password
-
-# Password of Orchestration service user heat
-HEAT_PASS: password
 
 # Database password for the Telemetry service
 CEILOMETER_DBPASS: password
@@ -57,15 +16,71 @@ CEILOMETER_DBPASS: password
 # Password of Telemetry service user ceilometer
 CEILOMETER_PASS: password
 
+# Database password for the Block Storage service
+CINDER_DBPASS: password
+
+# Password of Block Storage service user cinder
+CINDER_PASS: password
+
+# Database password for the dashboard
+DASH_DBPASS: password
+
+# Password of user demo
+DEMO_PASS: password
+
+# Database password for Image service
+GLANCE_DBPASS: password
+
+# Password of Image service user glance
+GLANCE_PASS: password
+
+# Database password for the Orchestration service
+HEAT_DBPASS: password
+
+# Password of Orchestration domain
+HEAT_DOMAIN_PASS: password
+
+# Password of Orchestration service user heat
+HEAT_PASS: password
+
+# Database password of Identity service
+KEYSTONE_DBPASS: password
+
+# Database password for the Networking service
+NEUTRON_DBPASS: password
+
+# Password of Networking service user neutron
+NEUTRON_PASS: password
+
+# Database password for Compute service
+NOVA_DBPASS: password
+
+# Password of Compute service user nova
+NOVA_PASS: password
+
+# Password of user guest of RabbitMQ
+RABBIT_PASS: password
+
+# Database password of Data processing service
+SAHARA_DBPASS: password
+
+# Password of Object Storage service user swift
+SWIFT_PASS: password
+
 # Database password of Database service
 TROVE_DBPASS: password
 
-# Password of Database Service user trove
+# Password of Database service user trove
 TROVE_PASS: password
 
 # The initial administration token
 # See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
 ADMIN_TOKEN: admintoken
+
+# Replace MANAGEMENT_INTERFACE_IP_ADDRESS with the IP address of the management
+# network interface on your compute node.
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-compute-install
+MANAGEMENT_INTERFACE_IP_ADDRESS: "{{ ansible_ssh_host }}"
 
 # The metadata proxy shared secret
 # See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html

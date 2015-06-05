@@ -2,7 +2,7 @@
 # Create the service entity and API endpoint
 # See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-services.html
 
-- name: Create the service entity for the Identity service
+- name: create the service entity and API endpoint
   keystone_service:
     name: keystone
     type: identity

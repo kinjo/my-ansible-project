@@ -1,17 +1,22 @@
 ---
-# To install and configure the components
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+# To install and configure the Identity service components
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-install.html
 
-# Run the following shell to install the packages
+- name: Disable the keystone service from starting automatically after installation
+  shell: echo "manual" > /etc/init/keystone.override
 
-- name: install the packages
+- name: Run the following command to install the packages
   apt:
     name: "{{ item }}"
   with_items:
   - keystone
-  - python-keystoneclient
+  - python-openstackclient
+  - apache2
+  - libapache2-mod-wsgi
+  - memcached
+  - python-memcache
 
-# Edit the /etc/keystone/keystone.conf file and complete the following actions:
+# Edit the /etc/keystone/keystone.conf file and complete the following actions
 
 - name: In the [DEFAULT] section, define the value of the initial administration token
   ini_file:
@@ -20,7 +25,7 @@
     option: admin_token
     value: "{{ os_identity_admin_token }}"
   notify:
-  - Restart the Identity service
+  - Restart the Apache HTTP server
   - Wait until restarting
 
 - name: In the [database] section, configure database access
@@ -30,10 +35,20 @@
     option: connection
     value: mysql://keystone:{{ os_identity_database_password }}@{{ os_database_host }}/keystone
   notify:
-  - Restart the Identity service
+  - Restart the Apache HTTP server
   - Wait until restarting
 
-- name: In the [token] section, configure the UUID token provider and SQL driver
+- name: In the [memcache] section, configure the Memcache service
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: memcache
+    option: servers
+    value: localhost:11211
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: In the [token] section, configure the UUID token provider and Memcached driver
   ini_file:
     dest: /etc/keystone/keystone.conf
     section: token
@@ -43,20 +58,83 @@
   - option: provider
     value: keystone.token.providers.uuid.Provider
   - option: driver
-    value: keystone.token.persistence.backends.sql.Token
+    value: keystone.token.persistence.backends.memcache.Token
   notify:
-  - Restart the Identity service
+  - Restart the Apache HTTP server
   - Wait until restarting
 
 - name: In the [revoke] section, configure the SQL revocation driver
   ini_file:
     dest: /etc/keystone/keystone.conf
     section: revoke
+    option: driver
+    value: keystone.contrib.revoke.backends.sql.Revoke
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: DEFAULT
     option: verbose
     value: True
   notify:
-  - Restart the Identity service
+  - Restart the Apache HTTP server
   - Wait until restarting
 
 - name: Populate the Identity service database
   shell: su -s /bin/sh -c "keystone-manage db_sync" keystone
+
+# To configure the Apache HTTP server
+
+- name: Edit the /etc/apache2/apache2.conf file and configure the ServerName option to reference the controller node
+  lineinfile:
+    dest: /etc/apache2/apache2.conf
+    line: ServerName {{ os_identity_host }}
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: Create the /etc/apache2/sites-available/wsgi-keystone.conf file with the following content
+  template:
+    src: wsgi-keystone.conf
+    dest: /etc/apache2/sites-available/wsgi-keystone.conf
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: Enable the Identity service virtual hosts
+  file:
+    path: /etc/apache2/sites-enabled/wsgi-keystone.conf
+    src: /etc/apache2/sites-available/wsgi-keystone.conf
+    state: link
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: Create the directory structure for the WSGI components
+  file:
+    path: /var/www/cgi-bin/keystone
+    state: directory
+
+- name: Copy the WSGI components from the upstream repository into this directory
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - url: http://git.openstack.org/cgit/openstack/keystone/plain/httpd/keystone.py?h=stable/kilo
+    dest: /var/www/cgi-bin/keystone/main
+  - url: http://git.openstack.org/cgit/openstack/keystone/plain/httpd/keystone.py?h=stable/kilo
+    dest: /var/www/cgi-bin/keystone/admin
+  notify:
+  - Restart the Apache HTTP server
+  - Wait until restarting
+
+- name: Adjust ownership and permissions on this directory and the files in it
+  file:
+    path: /var/www/cgi-bin/keystone
+    recurse: yes
+    mode: 0755
+    owner: keystone
+    group: keystone

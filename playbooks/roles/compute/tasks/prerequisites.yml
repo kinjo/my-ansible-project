@@ -1,6 +1,6 @@
 ---
 # To configure prerequisites
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-controller-install
 
 # To create the database, complete these steps
 
@@ -38,7 +38,7 @@
     tenant: service
     token: "{{ os_identity_admin_token }}"
 
-- name: Create the Compute service entity
+- name: Create the Compute service entity and API endpoint
   keystone_service:
     name: nova
     type: compute

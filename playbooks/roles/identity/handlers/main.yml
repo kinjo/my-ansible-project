@@ -1,7 +1,7 @@
 ---
-- name: Restart the Identity service
+- name: Restart the Apache HTTP server
   service:
-    name: keystone
+    name: apache2
     state: restarted
 
 - name: Wait until restarting

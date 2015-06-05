@@ -1,0 +1,15 @@
+---
+# Create OpenStack client environment scripts
+# http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-client-environment-scripts.html
+
+# To create the scripts
+
+- name: Edit the admin-openrc.sh file and add the following content
+  template:
+    src: admin-openrc.sh
+    dest: "{{ os_openrc_admin_path }}"
+
+- name: Edit the demo-openrc.sh file and add the following content
+  template:
+    src: demo-openrc.sh
+    dest: "{{ os_openrc_demo_path }}"

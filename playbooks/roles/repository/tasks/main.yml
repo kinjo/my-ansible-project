@@ -1,6 +1,6 @@
 ---
 # OpenStack packages
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-prerequisites
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-packages
 
 # To enable the OpenStack repository
 
@@ -10,8 +10,8 @@
 
 - name: Install the Ubuntu Cloud archive repository
   apt_repository:
-    repo: deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/juno main
+    repo: deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/kilo main
   notify: Upgrade the packages
 
-# Upgrade the packages
+# Upgrade the packages if needed
 - meta: flush_handlers

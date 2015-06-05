@@ -1,8 +1,8 @@
 ---
 # To configure Compute to use Networking
-# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-controller-node.html
 
-# Edit the /etc/nova/nova.conf file and complete the following actions
+# Edit the /etc/nova/nova.conf file on the controller node and complete the following actions
 
 - name: In the [DEFAULT] section, configure the APIs and drivers
   ini_file:
@@ -19,7 +19,7 @@
     value: nova.network.linux_net.LinuxOVSInterfaceDriver
   - option: firewall_driver
     value: nova.virt.firewall.NoopFirewallDriver
-  notify: Restart the Compute service
+  notify: Restart the Compute API service
 
 - name: In the [neutron] section, configure access parameters
   ini_file:
@@ -40,4 +40,4 @@
     value: neutron
   - option: admin_password
     value: "{{ os_networking_admin_password }}"
-  notify: Restart the Compute service
+  notify: Restart the Compute API service

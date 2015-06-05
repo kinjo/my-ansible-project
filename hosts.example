@@ -8,6 +8,6 @@ router      ansible_ssh_host=10.0.0.254 ansible_ssh_user=vagrant ansible_ssh_pas
 compute1
 compute2
 
-[real-servers]
+[real-hosts]
 allinone  ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_ip=10.0.1.11
 compute2  ansible_ssh_host=10.0.0.12 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_ip=10.0.1.12

@@ -1,0 +1,53 @@
+---
+# Install and configure
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/install_dashboard.html
+
+# To install the dashboard components
+
+- name: Install the packages
+  apt:
+    name: openstack-dashboard
+    update_cache: yes
+    cache_valid_time: 3600
+
+# To configure the dashboard
+# Edit the /etc/openstack-dashboard/local_settings.py file and complete the following actions
+
+- name: Configure the dashboard to use OpenStack services on the controller node
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^OPENSTACK_HOST\s*=
+    line: OPENSTACK_HOST = "{{ os_identity_host }}"
+  notify:
+  - Restart the web server
+
+- name: Allow all hosts to access the dashboard
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^ALLOWED_HOSTS\s*=
+    line: ALLOWED_HOSTS = '*'
+  notify:
+  - Restart the web server
+
+# Configure the memcached session storage service
+# Do nothing because it already is being so.
+
+- name: Optionally, configure the time zone
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^OPENSTACK_KEYSTONE_DEFAULT_ROLE\s*=
+    line: OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
+  notify:
+  - Restart the web server
+
+- name: Optionally, configure the time zone
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    backrefs: yes
+    regexp: ^TIME_ZONE\s*=
+    line: TIME_ZONE = "Asia/Tokyo"
+  notify:
+  - Restart the web server

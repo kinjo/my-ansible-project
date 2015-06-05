@@ -1,0 +1,55 @@
+---
+# Create projects, users, and roles
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-users.html
+
+# Create an administrative project, user, and role for administrative operations
+# in your environment
+- name: Create the admin project
+  keystone_user:
+    tenant: admin
+    tenant_description: Admin Project
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the admin user
+  keystone_user:
+    user: admin
+    tenant: admin
+    password: "{{ os_project_admin_password }}"
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the admin role and Add the admin role to the admin project and user
+  keystone_user:
+    user: admin
+    role: admin
+    tenant: admin
+    token: "{{ os_identity_admin_token }}"
+
+# This guide uses a service project that contains a unique user for each service
+# that you add to your environment
+- name: Create the service project
+  keystone_user:
+    tenant: service
+    tenant_description: Service Project
+    token: "{{ os_identity_admin_token }}"
+
+# Regular (non-admin) tasks should use an unprivileged project and user. As an
+# example, this guide creates the demo project and user
+- name: Create the demo project
+  keystone_user:
+    tenant: demo
+    tenant_description: Demo Project
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the demo user
+  keystone_user:
+    user: demo
+    tenant: demo
+    password: "{{ os_project_admin_password }}"
+    token: "{{ os_identity_admin_token }}"
+
+- name: Create the user role and Add the user role to the demo project and user
+  keystone_user:
+    user: demo
+    role: demo
+    tenant: demo
+    token: "{{ os_identity_admin_token }}"

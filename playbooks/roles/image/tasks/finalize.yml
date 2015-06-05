@@ -1,8 +1,8 @@
 ---
 # To finalize installation
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/glance-install.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/glance-install.html
 
-# Restart the Image Service services
+# Restart the Image service services
 - meta: flush_handlers
 
 - name: remove the SQLite database file

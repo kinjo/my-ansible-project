@@ -1,6 +1,10 @@
 ---
 # Install and configure compute node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-compute-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
 - include: prerequisites.yml
 - include: install.yml
 - include: finalize.yml
+
+# Create initial networks
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-initial-networks.html
+- include: initial-networks.yml

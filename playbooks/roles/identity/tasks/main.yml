@@ -1,21 +1,18 @@
 ---
 # Install and configure
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-install.html
 - include: prerequisites.yml
 - include: install.yml
 - include: finalize.yml
 
-# Create tenants, users, and roles
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-users.html
-# described in tenants.yml, users.yml and roles.yml in the demo role
-
-# OpenStack services also require a tenant, user, and role to interact with other services.
-- include: service-tenant.yml
-
 # Create the service entity and API endpoint
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-services.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-services.html
 - include: service-entity-and-endpoint.yml
 
+# Create projects, users, and roles
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-users.html
+- include: projects-users-roles.yml
+
 # Create OpenStack client environment scripts
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-client-environment-scripts.html
-# described in openrc.yml in the demo role
+# http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-client-environment-scripts.html
+- include: client-environment-scripts.yml

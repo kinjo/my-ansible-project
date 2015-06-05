@@ -1,11 +1,15 @@
 ---
 # Install and configure
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/keystone-install.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/keystone-install.html
 - hosts: controller
   roles:
   - role: identity
+    os_identity_host: controller
     os_database_root_password: "{{ database_password }}"
     os_identity_database_password: "{{ KEYSTONE_DBPASS }}"
-    os_identity_host: controller
     os_identity_admin_token: "{{ ADMIN_TOKEN }}"
+    os_project_admin_password: "{{ ADMIN_PASS }}"
+    os_project_demo_password: "{{ DEMO_PASS }}"
+    os_openrc_admin_path: /root/admin-openrc.sh
+    os_openrc_demo_path: /root/demo-openrc.sh
   sudo: yes

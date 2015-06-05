@@ -10,7 +10,6 @@ make networking			Build networking role only
 make networking-compute-node	Build networking-compute-node role only
 make networking-network-node	Build networking-network-node role only
 make dashboard			Build dashboard role only
-make tenant			Build tenant role only
 make nat			Build nat roles only
 make help			Show help only
 endef
@@ -21,9 +20,9 @@ all: allinone nat
 allinone: \
   host \
   ntp \
+  repository \
   database \
   messaging \
-  repository \
   identity \
   image \
   compute \
@@ -31,8 +30,7 @@ allinone: \
   networking \
   networking-network-node \
   networking-compute-node \
-  dashboard \
-  tenant
+  dashboard
 
 host: prerequisite
 	ansible-playbook playbooks/host.yml

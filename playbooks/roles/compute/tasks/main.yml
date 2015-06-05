@@ -1,10 +1,14 @@
 ---
 # Install and configure controller node
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-controller-install
 - include: prerequisites.yml
 - include: install.yml
 - include: finalize.yml
 
+# To configure Compute to use Networking
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-controller-node.html
+- include: networking.yml
+
 # On the controller node, edit the /etc/nova/nova.conf file and complete the following action:
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-network-node.html
 - include: metadata-agent.yml

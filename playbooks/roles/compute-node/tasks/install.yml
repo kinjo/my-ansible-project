@@ -1,6 +1,6 @@
 ---
 # To install and configure the Compute hypervisor components
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_nova.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-compute-install
 
 - name: Install the packages
   apt:
@@ -11,18 +11,24 @@
 
 # Edit the /etc/nova/nova.conf file and complete the following actions
 
-- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+- name: In the [DEFAULT] and [oslo_messaging_rabbit] sections, configure RabbitMQ message queue access
   ini_file:
     dest: /etc/nova/nova.conf
-    section: DEFAULT
+    section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-  - option: rpc_backend
+  - section: DEFAULT
+    option: rpc_backend
     value: rabbit
-  - option: rabbit_host
-    value: "{{ os_messaging_host }}"
-  - option: rabbit_password
+  - section: oslo_messaging_rabbit
+    option: rabbit_host
+    value: controller
+  - section: oslo_messaging_rabbit
+    option: rabbit_userid
+    value: openstack
+  - section: oslo_messaging_rabbit
+    option: rabbit_password
     value: "{{ os_messaging_password }}"
   notify: Restart the Compute service
 
@@ -38,25 +44,31 @@
     value: keystone
   - section: keystone_authtoken
     option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://{{ os_identity_host }}:5000
   - section: keystone_authtoken
-    option: identity_uri
+    option: auth_url
     value: http://{{ os_identity_host }}:35357
   - section: keystone_authtoken
-    option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    option: auth_plugin
+    value: password
   - section: keystone_authtoken
-    option: admin_tenant_name
+    option: project_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: user_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: project_name
     value: service
   - section: keystone_authtoken
-    option: admin_user
+    option: username
     value: nova
   - section: keystone_authtoken
-    option: admin_password
+    option: password
     value: "{{ os_compute_admin_password }}"
   notify: Restart the Compute service
 
-- name: In the [DEFAULT] section, configure the my_ip option to use the management interface IP address of the controller node
+- name: In the [DEFAULT] section, configure the my_ip option
   ini_file:
     dest: /etc/nova/nova.conf
     section: DEFAULT
@@ -81,12 +93,20 @@
     value: http://{{ os_compute_novncproxy_host }}:6080/vnc_auto.html
   notify: Restart the Compute service
 
-- name: In the [glance] section, configure the location of the Image Service
+- name: In the [glance] section, configure the location of the Image service
   ini_file:
     dest: /etc/nova/nova.conf
     section: glance
     option: host
     value: "{{ os_image_host }}"
+  notify: Restart the Compute service
+
+- name: In the [oslo_concurrency] section, configure the lock path
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: oslo_concurrency
+    option: lock_path
+    value: /var/lib/nova/tmp
   notify: Restart the Compute service
 
 - name: (Optional) To assist with troubleshooting, enable verbose logging in the [DEFAULT] section

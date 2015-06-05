@@ -6,3 +6,6 @@ os_image_admin_password: password
 os_identity_admin_token: admintoken
 os_identity_host: controller
 os_image_host: controller
+os_project_admin_password: password
+os_openrc_admin_path: /root/admin-openrc.sh
+os_openrc_demo_path: /root/demo-openrc.sh

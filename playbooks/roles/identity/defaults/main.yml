@@ -4,3 +4,7 @@ os_database_host: controller
 os_identity_database_password: password
 os_identity_admin_token: admintoken
 os_identity_host: controller
+os_project_admin_password: password
+os_project_demo_password: password
+os_openrc_admin_path: /root/admin-openrc.sh
+os_openrc_demo_path: /root/demo-openrc.sh

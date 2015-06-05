@@ -1,6 +1,6 @@
 ---
 # To install the Networking components
-# See http://docs.openstack.org/juno/install-guide/install/apt/content/neutron-network-node.html
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-network-node.html
 
 - name: install the Networking components
   apt:
@@ -10,21 +10,29 @@
   - neutron-plugin-openvswitch-agent
   - neutron-l3-agent
   - neutron-dhcp-agent
+  - neutron-metadata-agent
 
 # To configure the Networking common components
+# Edit the /etc/neutron/neutron.conf file and complete the following actions
 
-- name: In the [DEFAULT] section, configure RabbitMQ message broker access
+- name: In the [DEFAULT] and [oslo_messaging_rabbit] sections, configure RabbitMQ message queue access
   ini_file:
     dest: /etc/neutron/neutron.conf
     section: DEFAULT
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-  - option: rpc_backend
+  - section: DEFAULT
+    option: rpc_backend
     value: rabbit
-  - option: rabbit_host
-    value: "{{ os_messaging_host }}"
-  - option: rabbit_password
+  - section: oslo_messaging_rabbit
+    option: rabbit_host
+    value: controller
+  - section: oslo_messaging_rabbit
+    option: rabbit_userid
+    value: openstack
+  - section: oslo_messaging_rabbit
+    option: rabbit_password
     value: "{{ os_messaging_password }}"
   notify: Restart the Networking services
 
@@ -40,18 +48,27 @@
     value: keystone
   - section: keystone_authtoken
     option: auth_uri
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://{{ os_identity_host }}:5000
   - section: keystone_authtoken
-    option: identity_uri
+    option: auth_url
     value: http://{{ os_identity_host }}:35357
   - section: keystone_authtoken
-    option: admin_tenant_name
+    option: auth_plugin
+    value: password
+  - section: keystone_authtoken
+    option: project_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: user_domain_id
+    value: default
+  - section: keystone_authtoken
+    option: project_name
     value: service
   - section: keystone_authtoken
-    option: admin_user
+    option: username
     value: neutron
   - section: keystone_authtoken
-    option: admin_password
+    option: password
     value: "{{ os_networking_admin_password }}"
   notify: Restart the Networking services
 
@@ -79,8 +96,9 @@
   notify: Restart the Networking services
 
 # To configure the Modular Layer 2 (ML2) plug-in
+# Edit the /etc/neutron/plugins/ml2/ml2_conf.ini file and complete the following actions
 
-- name:  the [ml2] section, enable the flat and generic routing encapsulation (GRE) network type drivers, GRE tenant networks, and the OVS mechanism driver
+- name: In the [ml2] section, enable the flat, VLAN, generic routing encapsulation (GRE), and virtual extensible LAN (VXLAN) network type drivers, GRE tenant networks, and the OVS mechanism driver
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ml2
@@ -88,7 +106,7 @@
     value: "{{ item.value }}"
   with_items:
   - option: type_drivers
-    value: flat,gre
+    value: flat,vlan,gre,vxlan
   - option: tenant_network_types
     value: gre
   - option: mechanism_drivers
@@ -103,7 +121,7 @@
     value: external
   notify: Restart the Networking services
 
-- name:  the [ml2_type_gre] section, configure the tunnel identifier (id) range
+- name: In the [ml2_type_gre] section, configure the tunnel identifier (id) range
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ml2_type_gre
@@ -135,8 +153,6 @@
   with_items:
   - option: local_ip
     value: "{{ os_networking_instance_tunnels_interface_ip_address }}"
-  - option: enable_tunneling
-    value: True
   - option: bridge_mappings
     value: external:br-ex
   notify: Restart the Networking services
@@ -150,8 +166,9 @@
   notify: Restart the Networking services
 
 # To configure the Layer-3 (L3) agent
+# Edit the /etc/neutron/l3_agent.ini file and complete the following actions
 
-- name: In the [DEFAULT] section, configure the driver, enable network namespaces, configure the external network bridge and enable deletion of defunct router namespaces
+- name: In the [DEFAULT] section, configure the interface driver, external network bridge, and enable deletion of defunct router namespaces
   ini_file:
     dest: /etc/neutron/l3_agent.ini
     section: DEFAULT
@@ -163,7 +180,7 @@
   - option: use_namespaces
     value: True
   - option: external_network_bridge
-    value: br-ex
+    value:
   - option: router_delete_namespaces
     value: True
   notify: Restart the Networking services
@@ -177,8 +194,9 @@
   notify: Restart the Networking services
 
 # To configure the DHCP agent
+# Edit the /etc/neutron/dhcp_agent.ini file and complete the following actions
 
-- name: In the [DEFAULT] section, configure the drivers, enable namespaces and enable deletion of defunct DHCP namespaces
+- name: In the [DEFAULT] section, configure the interface and DHCP drivers and enable deletion of defunct DHCP namespaces
   ini_file:
     dest: /etc/neutron/dhcp_agent.ini
     section: DEFAULT
@@ -189,8 +207,6 @@
     value: neutron.agent.linux.interface.OVSInterfaceDriver
   - option: dhcp_driver
     value: neutron.agent.linux.dhcp.Dnsmasq
-  - option: use_namespaces
-    value: True
   - option: dhcp_delete_namespaces
     value: True
   notify: Restart the Networking services
@@ -224,6 +240,7 @@
   - Kill any existing dnsmasq processes
 
 # To configure the metadata agent
+# Edit the /etc/neutron/metadata_agent.ini file and complete the following actions
 
 - name: In the [DEFAULT] section, configure access options
   ini_file:
@@ -232,15 +249,23 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
+  - option: auth_uri
+    value: http://{{ os_identity_host }}:5000
   - option: auth_url
-    value: http://{{ os_identity_host }}:5000/v2.0
+    value: http://{{ os_identity_host }}:35357
   - option: auth_region
     value: regionOne
-  - option: admin_tenant_name
+  - option: auth_plugin
+    value: password
+  - option: project_domain_id
+    value: default
+  - option: user_domain_id
+    value: default
+  - option: project_name
     value: service
-  - option: admin_user
+  - option: username
     value: neutron
-  - option: admin_password
+  - option: password
     value: "{{ os_networking_admin_password }}"
   notify: Restart the Networking services
 
@@ -269,17 +294,17 @@
   notify: Restart the Networking services
 
 # On the controller node, edit the /etc/nova/nova.conf file and complete the following action
-# See compute role
+# See metadata-agent.yml in the compute role
 
 # On the controller node, restart the Compute API service
-# See compute role
+# See metadata-agent.yml in the compute role
 
 # To configure the Open vSwitch (OVS) service
 
 - name: Restart the OVS service
   service:
     name: openvswitch-switch
-    state: started
+    state: restarted
 
 - name: Add the external bridge
   shell: ovs-vsctl add-br br-ex

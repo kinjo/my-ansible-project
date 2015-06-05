@@ -1,7 +1,7 @@
-Study the OpenStack Installation Guide for Ubuntu 14.04 - Juno
+Study the OpenStack Installation Guide for Ubuntu 14.04 - Kilo
 ====
 
-This is to study [the OpenStack Installation Guide for Ubuntu 14.04 - Juno](http://docs.openstack.org/juno/install-guide/install/apt/content/index.html).
+This is to study [the OpenStack Installation Guide for Ubuntu 14.04 - kilo](http://docs.openstack.org/kilo/install-guide/install/apt/content/).
 
 Any tasks to build OpenStack services are written in accordance with the Guide
 as much as possible.
@@ -9,8 +9,8 @@ as much as possible.
 However, There are some points of difference between the guide and the tasks as
 following.
 
-* Build an all-in-one server in now
-* Use VirtualBox and Vagrant and Ansible in order to save time andeffort for
+* An all-in-one node and an compute node are built
+* Use VirtualBox and Vagrant and Ansible in order to save time and effort for
   getting the new machine
 * Use qemu instead of KVM
 * There is an additional server named ansible to run the Ansible tasks
@@ -19,14 +19,14 @@ following.
 
 The architecture of the environment built as a result of the tasks is below.
 
-                                                  VirtualBox NAT Network(for Vagrant)
+                                                             NAT Network(for Vagrant)
     ----------+------------------------+--------------------------+-------------
               |                        |                          |
           eth0|                    eth0|                      eth0|
     +---------+----------+ +-----------+------------+ +-----------+------------+
     |HOST: ansible(512MB)| |HOST: allinone(4GB)     | |HOST: compute2(4GB)     |
-    | Acts as router     | | Acts as                | | Acts as                |
-    |                    | |  controller/network/   | |  compute node          |
+    | Acts also as       | | Acts as a              | | Acts as a              |
+    |  a router          | |  controller/network/   | |  compute node          |
     |                    | |  compute node          | |                        |
     +--------------------+ +------------------------+ +------------------------+
     |ROLES:              | |ROLES:                  | |ROLES:                  |
@@ -41,19 +41,18 @@ The architecture of the environment built as a result of the tasks is below.
          |         |       | networking-network-node| |                        |
          |         |       | networking-compute-node| |                        |
          |         |       | dashboard              | |                        |
-         |         |       | tenant                 | |                        |
          |         |       +---+------+-----+-------+ +-+--------+-------------+
          |         |       eth1|  eth2| eth3|           |eth1    |eth2
          |         |        .11|   .11|     |           |.12     |.12
          |         |           |      |     |           |        |
          |         |           |  ----+-----)-----------)--------+----------
-         |         |           |            |           |   VirtualBox Private Network
+         |         |           |            |           |              Private Network
          |         |           |            |           | (for Tunnel net) 10.0.1.0/24
          |     ----+-----------)------------+-----------)-------------------
-         |                     |                        |   VirtualBox Private Network
+         |                     |                        |              Private Network
          |                     |                        |(External net) 203.0.113.0/24
     -----+---------------------+------------------------+-------------------
-                                                            VirtualBox Private Network
+                                                                       Private Network
                                                           (Management net) 10.0.0.0/24
 
 Usage
@@ -65,8 +64,8 @@ Usage
 
 2. Switch the branch and update the submodule
 
-        git checkout -b openstack-ubuntu-14.04-juno \
-          origin/openstack-ubuntu-14.04-juno
+        git checkout -b openstack-ubuntu-14.04-kilo \
+          origin/openstack-ubuntu-14.04-kilo
         git submodule init
         git submodule update
 

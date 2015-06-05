@@ -10,4 +10,7 @@
     os_identity_host: controller
     os_image_host: controller
     os_database_host: controller
+    os_project_admin_password: "{{ ADMIN_PASS }}"
+    os_openrc_admin_path: /root/admin-openrc.sh
+    os_openrc_demo_path: /root/demo-openrc.sh
   sudo: yes
