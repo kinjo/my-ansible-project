@@ -24,7 +24,7 @@
     value: rabbit
   - section: oslo_messaging_rabbit
     option: rabbit_host
-    value: controller
+    value: "{{ os_messaging_host }}"
   - section: oslo_messaging_rabbit
     option: rabbit_userid
     value: openstack
@@ -47,10 +47,10 @@
     value: keystone
   - section: keystone_authtoken
     option: auth_uri
-    value: http://controller:5000
+    value: http://{{ os_identity_host }}:5000
   - section: keystone_authtoken
     option: auth_url
-    value: http://controller:35357
+    value: http://{{ os_identity_host }}:35357
   - section: keystone_authtoken
     option: auth_plugin
     value: password
@@ -152,7 +152,7 @@
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     section: ovs
     option: local_ip
-    value: "{{ os_networking_instance_tunnels_interface_ip_address }}"
+    value: "{{ os_networking_tunnels_address }}"
   notify:
   - Restart the OVS service
   - Restart the Open vSwitch (OVS) agent

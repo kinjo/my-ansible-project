@@ -2,18 +2,23 @@
 # To configure networking
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-neutron-networking-network-node
 
-# 3. The external interface uses a special configuration without an IP address
-# assigned to it. Configure the third interface as the external interface
+- name: Ensure the source line exists
+  lineinfile:
+    dest: /etc/network/interfaces
+    line: source /etc/network/interfaces.d/*.cfg
 
-- name: Place a script to edit the /etc/network/interfaces file
+- name: Configure the second interface as the instance tunnels interface
   template:
-    src: edit-interfaces.sh
-    dest: /tmp/edit-interfaces.sh
-  register: st
+    src: tunnels_interface.cfg
+    dest: /etc/network/interfaces.d/{{ os_networking_tunnels_interface }}.cfg
+  notify:
+  - Reboot the system to activate the changes
+  - Wait until rebooting
 
-- name: Edit the /etc/network/interfaces file to contain the following
-  shell: bash /tmp/edit-interfaces.sh
-  when: st|changed
+- name: Configure the third interface as the external interface
+  template:
+    src: external_interface.cfg
+    dest: /etc/network/interfaces.d/{{ os_networking_external_interface }}.cfg
   notify:
   - Reboot the system to activate the changes
   - Wait until rebooting

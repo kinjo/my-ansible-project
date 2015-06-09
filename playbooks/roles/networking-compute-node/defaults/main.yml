@@ -1,16 +1,6 @@
 ---
-os_tenant_admin_password: password
-os_tenant_demo_password: password
 os_networking_admin_password: password
 os_messaging_password: password
 os_messaging_host: controller
 os_identity_host: controller
-os_networking_instance_tunnels_interface_ip_address: 10.0.1.11
-os_tenant_ext_subnet_allocation_pool_start: 203.0.113.101
-os_tenant_ext_subnet_allocation_pool_end: 203.0.113.200
-os_tenant_ext_subnet_cidr: 203.0.113.0/24
-os_tenant_ext_subnet_gateway_ip: 203.0.113.1
-
-# Usually, 10.0.2.3 is a router in the VirtualBox's NAT engine which provides
-# DNS to the VirtualBox machine. 8.8.8.8 is also useful.
-os_tenant_subnet_nameservers: 10.0.2.3
+os_networking_tunnels_address: 10.0.1.11

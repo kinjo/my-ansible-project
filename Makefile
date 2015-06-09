@@ -1,23 +1,22 @@
 define HELP
 Available commands:
 
-make allinone			Build all roles for the all-in-one server
-make identity			Build identity role only
-make image			Build image role only
-make compute			Build compute role only
-make compute-node		Build compute-node role only
-make networking			Build networking role only
-make networking-compute-node	Build networking-compute-node role only
-make networking-network-node	Build networking-network-node role only
-make dashboard			Build dashboard role only
-make nat			Build nat roles only
-make help			Show help only
+make                          Build all
+make identity                 Build identity service only
+make image                    Build image service only
+make compute                  Build compute service only
+make compute-node             Build compute-node only
+make networking               Build networking service only
+make networking-network-node  Build networking-network-node only
+make networking-compute-node  Build networking-compute-node only
+make tenant-network           Build tenant-network only
+make dashboard                Build dashboard only
+make nat                      Build NAT networking only
+make help                     Show help
 endef
 export HELP
 
-all: allinone nat
-
-allinone: \
+all: \
   host \
   ntp \
   repository \
@@ -30,7 +29,9 @@ allinone: \
   networking \
   networking-network-node \
   networking-compute-node \
-  dashboard
+  tenant-network \
+  dashboard \
+  nat
 
 host: prerequisite
 	ansible-playbook playbooks/host.yml
@@ -58,8 +59,8 @@ networking-compute-node: prerequisite
 	ansible-playbook playbooks/networking-compute-node.yml
 dashboard: prerequisite
 	ansible-playbook playbooks/dashboard.yml
-tenant: prerequisite
-	ansible-playbook playbooks/tenant.yml
+tenant-network: prerequisite
+	ansible-playbook playbooks/tenant-network.yml
 nat: prerequisite
 	ansible-playbook playbooks/nat.yml
 prerequisite:

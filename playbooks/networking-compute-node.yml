@@ -4,15 +4,9 @@
 - hosts: computes
   roles:
   - role: networking-compute-node
-    os_tenant_admin_password: "{{ ADMIN_PASS }}"
-    os_tenant_demo_password: "{{ DEMO_PASS }}"
     os_networking_admin_password: "{{ NEUTRON_PASS }}"
     os_messaging_password: "{{ RABBIT_PASS }}"
     os_messaging_host: controller
     os_identity_host: controller
-    os_networking_instance_tunnels_interface_ip_address: "{{ INSTANCE_TUNNELS_INTERFACE_IP_ADDRESS }}"
-    os_tenant_ext_subnet_allocation_pool_start: "{{ FLOATING_IP_START }}"
-    os_tenant_ext_subnet_allocation_pool_end: "{{ FLOATING_IP_END }}"
-    os_tenant_ext_subnet_cidr: "{{ EXTERNAL_NETWORK_CIDR }}"
-    os_tenant_ext_subnet_gateway_ip: "{{ EXTERNAL_NETWORK_GATEWAY }}"
+    os_networking_tunnels_address: "{{ INSTANCE_TUNNELS_INTERFACE_IP_ADDRESS }}"
   sudo: yes

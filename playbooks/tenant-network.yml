@@ -1,0 +1,14 @@
+---
+# Create initial networks
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-initial-networks.html
+- hosts: controller
+  roles:
+  - role: tenant-network
+    os_tenant_admin_password: "{{ ADMIN_PASS }}"
+    os_tenant_demo_password: "{{ DEMO_PASS }}"
+    os_identity_host: controller
+    os_tenant_ext_subnet_allocation_pool_start: "{{ FLOATING_IP_START }}"
+    os_tenant_ext_subnet_allocation_pool_end: "{{ FLOATING_IP_END }}"
+    os_tenant_ext_subnet_cidr: "{{ EXTERNAL_NETWORK_CIDR }}"
+    os_tenant_ext_subnet_gateway_ip: "{{ EXTERNAL_NETWORK_GATEWAY }}"
+  sudo: yes

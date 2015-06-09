@@ -22,3 +22,4 @@
 
 - name: Kill any existing dnsmasq processes
   shell: pkill dnsmasq
+  ignore_errors: yes

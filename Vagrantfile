@@ -38,7 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cfg|
     config.vm.network "private_network", ip: "10.0.0.11"
 
     # Tunnel network
-    config.vm.network "private_network", ip: "10.0.1.11"
+    config.vm.network "private_network", ip: "10.0.1.11", auto_config: false
 
     # External network
     config.vm.network "private_network", ip: "203.0.113.11", auto_config: false
@@ -61,6 +61,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cfg|
     config.vm.network "private_network", ip: "10.0.0.12"
 
     # Tunnel network
-    config.vm.network "private_network", ip: "10.0.1.12"
+    config.vm.network "private_network", ip: "10.0.1.12", auto_config: false
   end
 end
