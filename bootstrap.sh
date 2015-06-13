@@ -15,4 +15,5 @@ sudo apt-get install -y python-dev python-setuptools sshpass git
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
-sudo su - -c '. /opt/ansibleenv/bin/activate && pip install ansible PyYaML Jinja2'
+echo . /opt/ansibleenv/bin/activate > /etc/profile.d/ansible.sh
+sudo su - -c 'pip install ansible PyYaML Jinja2'
