@@ -106,6 +106,18 @@ EXTERNAL_NETWORK_CIDR: 203.0.113.0/24
 # The gateway associated with the physical network
 EXTERNAL_NETWORK_GATEWAY: 203.0.113.2
 
-# Usually, 10.0.2.3 is a router in the VirtualBox's NAT engine which provides
+# subnet for a network in the demo tenant
+tenant_subnet_cidr: 192.168.1.0/24
+
+# gateway for the subnet in the demo tenant
+tenant_subnet_gateway_ip: 192.168.1.1
+
+# 10.0.2.3 is a router in the VirtualBox's NAT engine which also provides
 # DNS to the VirtualBox machine. 8.8.8.8 is also useful.
 tenant_subnet_nameservers: 10.0.2.3
+
+# `qemu` or `kvm` is available in this project in now
+virt_type: qemu
+
+# Hostname or IP address to novnproxy which must be accessible from browser
+novncproxy_host: "{{ hostvars['controller']['ansible_ssh_host'] }}"

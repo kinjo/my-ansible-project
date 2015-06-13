@@ -22,15 +22,15 @@
     allocation_pool_start: "{{ os_tenant_ext_subnet_allocation_pool_start }}"
     allocation_pool_end: "{{ os_tenant_ext_subnet_allocation_pool_end }}"
     enable_dhcp: no
-    gateway_ip: "{{ os_tenant_ext_subnet_gateway_ip }}"
     cidr: "{{ os_tenant_ext_subnet_cidr }}"
+    gateway_ip: "{{ os_tenant_ext_subnet_gateway_ip }}"
     login_username: admin
     login_password: "{{ os_tenant_admin_password }}"
     login_tenant_name: admin
     auth_url: http://{{ os_identity_host }}:5000/v2.0
 
 - pause:
-    seconds: 30
+    seconds: 10
 
 # Tenant network
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron_initial-tenant-network.html
@@ -46,16 +46,16 @@
   neutron_subnet:
     name: demo-subnet
     network_name: demo-net
-    gateway_ip: 192.168.1.1
+    cidr: "{{ os_tenant_tenant_subnet_cidr }}"
+    gateway_ip: "{{ os_tenant_subnet_gateway_ip }}"
     dns_nameservers: "{{ os_tenant_subnet_nameservers }}"
-    cidr: 192.168.1.0/24
     login_username: demo
     login_password: "{{ os_tenant_demo_password }}"
     login_tenant_name: demo
     auth_url: http://{{ os_identity_host }}:5000/v2.0
 
 - pause:
-    seconds: 30
+    seconds: 10
 
 # To create a router on the tenant network and attach the external and tenant networks to it
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron_initial-tenant-network.html
