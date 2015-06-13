@@ -7,13 +7,14 @@
     dest: /etc/network/interfaces
     line: source /etc/network/interfaces.d/*.cfg
 
-- name: Configure the second interface as the instance tunnels interface
+- name: Configure the second interface as the instance tunnels interface if needed
   template:
     src: tunnels_interface.cfg
     dest: /etc/network/interfaces.d/{{ os_networking_tunnels_interface }}.cfg
   notify:
   - Reboot the system to activate the changes
   - Wait until rebooting
+  when: os_networking_tunnels_interface != ""
 
 - name: Configure the third interface as the external interface
   template:
