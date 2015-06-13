@@ -16,7 +16,9 @@ make help                     Show help
 endef
 export HELP
 
-all: \
+all: openstack nat
+
+openstack: \
   host \
   ntp \
   repository \
@@ -30,38 +32,37 @@ all: \
   networking-network-node \
   networking-compute-node \
   tenant-network \
-  dashboard \
-  nat
+  dashboard
 
-host: prerequisite
+host:
 	ansible-playbook playbooks/host.yml
-ntp: prerequisite
+ntp:
 	ansible-playbook playbooks/ntp.yml
-database: prerequisite
+database:
 	ansible-playbook playbooks/database.yml
-messaging: prerequisite
+messaging:
 	ansible-playbook playbooks/messaging.yml
-repository: prerequisite
+repository:
 	ansible-playbook playbooks/repository.yml
-identity: prerequisite
+identity:
 	ansible-playbook playbooks/identity.yml
-image: prerequisite
+image:
 	ansible-playbook playbooks/image.yml
-compute: prerequisite
+compute:
 	ansible-playbook playbooks/compute.yml
-compute-node: prerequisite
+compute-node:
 	ansible-playbook playbooks/compute-node.yml
-networking: prerequisite
+networking:
 	ansible-playbook playbooks/networking.yml
-networking-network-node: prerequisite
+networking-network-node:
 	ansible-playbook playbooks/networking-network-node.yml
-networking-compute-node: prerequisite
+networking-compute-node:
 	ansible-playbook playbooks/networking-compute-node.yml
-dashboard: prerequisite
+dashboard:
 	ansible-playbook playbooks/dashboard.yml
-tenant-network: prerequisite
+tenant-network:
 	ansible-playbook playbooks/tenant-network.yml
-nat: prerequisite
+nat:
 	ansible-playbook playbooks/nat.yml
 prerequisite:
 	@[ -e hosts ] || cp hosts.example hosts
