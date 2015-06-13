@@ -1,17 +1,25 @@
 define HELP
 Available commands:
 
-make something			Run the playbook for the something
-make role			Install roles described in requirements.yml
+make something			Run example playbook
+make role			Install roles
 make help			Show help
 endef
 export HELP
 
-all: help
+all: something
 
-something:
-	. /opt/ansibleenv/bin/activate && ansible-playbook playbooks/something.yml
+something: prerequisite
+	ansible-playbook playbooks/something.yml
+
+prerequisite:
+	@[ -e hosts ] || cp hosts.example hosts
+	@[ -e group_vars/all ] || cp group_vars/all.example group_vars/all
+
 role:
-	sudo bash -c ". /opt/ansibleenv/bin/activate && ansible-galaxy install --ignore-errors -r requirements.yml"
+	@[ -n "$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^\$)" ] && \
+  sudo bash -c "ansible-galaxy install --ignore-errors -r requirements.yml" || \
+  echo There is no role defined.
+
 help:
 	@echo "$$HELP"
