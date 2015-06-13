@@ -10,7 +10,8 @@
     os_identity_host: controller
     os_compute_my_ip: "{{ MANAGEMENT_INTERFACE_IP_ADDRESS }}"
     os_image_host: controller
-    os_compute_novncproxy_host: 10.0.0.11
+    os_compute_novncproxy_host: "{{ novncproxy_host }}"
     os_networking_controller_host: controller
     os_networking_admin_password: "{{ NEUTRON_PASS }}"
+    os_compute_virt_type: "{{ virt_type }}"
   sudo: yes

@@ -5,9 +5,7 @@
 - name: Install the packages
   apt:
     name: "{{ item }}"
-  with_items:
-  - nova-compute-qemu
-  - sysfsutils
+  with_items: packages[os_compute_virt_type]
 
 # Edit the /etc/nova/nova.conf file and complete the following actions
 

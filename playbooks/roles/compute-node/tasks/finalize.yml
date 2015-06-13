@@ -7,7 +7,7 @@
     dest: /etc/nova/nova-compute.conf
     section: libvirt
     option: virt_type
-    value: qemu
+    value: "{{ os_compute_virt_type }}"
   notify: Restart the Compute service
 
 # Restart the Compute service
