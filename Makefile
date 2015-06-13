@@ -9,7 +9,7 @@ export HELP
 
 all: something
 
-something: prerequisite
+something:
 	ansible-playbook playbooks/something.yml
 
 prerequisite:
@@ -17,9 +17,9 @@ prerequisite:
 	@[ -e group_vars/all ] || cp group_vars/all.example group_vars/all
 
 role:
-	@[ -n "$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^\$)" ] && \
-  sudo bash -c "ansible-galaxy install --ignore-errors -r requirements.yml" || \
-  echo There is no role defined.
+	@[ -n "$$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^$$)" ] && \
+	  sudo bash -lc "ansible-galaxy install -i -r requirements.yml" || \
+	  echo There is no role defined.
 
 help:
 	@echo "$$HELP"

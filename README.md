@@ -15,7 +15,7 @@ Usage
 
 2. Switch to the branch. For example,
 
-        git checkout -b rbenv+ruby origin/rbenv+ruby
+        git checkout -b openstack-ubuntu-14.04-kilo origin/openstack-ubuntu-14.04-kilo
 
 3. Vagrant up
 
@@ -29,13 +29,13 @@ Usage
 
         cd /vagrant
 
-6. Install roles
+6. Prepare templates for the inventory file and the group variables' file
+
+        make prerequisite
+
+7. Install roles if needed
 
         make role
-
-7. Check available menus to build
-
-        make help
 
 8. Run default playbook
 
