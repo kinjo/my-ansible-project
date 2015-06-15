@@ -8,9 +8,14 @@ if [ "$(swapon -s | wc -l)" = "1" ]; then
   sudo swapon -a
 fi
 
-# Install Ansible
+# Upgrade
 sudo apt-get update
 sudo apt-get dist-upgrade -y
+
+# Prevent locale warning
+sudo apt-get install -y language-pack-ja
+
+# Install Ansible
 sudo apt-get install -y python-dev python-setuptools sshpass git
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
