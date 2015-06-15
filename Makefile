@@ -16,10 +16,12 @@ make help                     Show help
 endef
 export HELP
 
+.PHONY: hosts
+
 all: openstack nat
 
 openstack: \
-  host \
+  hosts \
   ntp \
   repository \
   database \
@@ -34,38 +36,54 @@ openstack: \
   tenant-network \
   dashboard
 
-host:
-	ansible-playbook playbooks/host.yml
+hosts:
+	ansible-playbook playbooks/hosts.yml
+
 ntp:
 	ansible-playbook playbooks/ntp.yml
+
 database:
 	ansible-playbook playbooks/database.yml
+
 messaging:
 	ansible-playbook playbooks/messaging.yml
+
 repository:
 	ansible-playbook playbooks/repository.yml
+
 identity:
 	ansible-playbook playbooks/identity.yml
+
 image:
 	ansible-playbook playbooks/image.yml
+
 compute:
 	ansible-playbook playbooks/compute.yml
+
 compute-node:
 	ansible-playbook playbooks/compute-node.yml
+
 networking:
 	ansible-playbook playbooks/networking.yml
+
 networking-network-node:
 	ansible-playbook playbooks/networking-network-node.yml
+
 networking-compute-node:
 	ansible-playbook playbooks/networking-compute-node.yml
+
 dashboard:
 	ansible-playbook playbooks/dashboard.yml
+
 tenant-network:
 	ansible-playbook playbooks/tenant-network.yml
+
 nat:
 	ansible-playbook playbooks/nat.yml
+
 prerequisite:
 	@[ -e hosts ] || cp hosts.example hosts
 	@[ -e group_vars/all ] || cp group_vars/all.example group_vars/all
+
 help:
 	@echo "$$HELP"
