@@ -1,7 +1,7 @@
 ---
 # Messaging server
 # See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_basic_environment.html#basics-messaging-server
-- hosts: controller
+- hosts: control-hosts
   roles:
   - role: messaging
     os_messaging_password: "{{ RABBIT_PASS }}"

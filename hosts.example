@@ -1,13 +1,17 @@
-controller  ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.11
-network     ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.11
-compute1    ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.11
-compute2    ansible_ssh_host=10.0.0.12 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.12
-router      ansible_ssh_host=10.0.0.254 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+allinone ansible_ssh_host=10.0.0.11 tunnels_interface_address=10.0.1.11
+compute2 ansible_ssh_host=10.0.0.12 tunnels_interface_address=10.0.1.12
+router   ansible_ssh_host=10.0.0.254
 
-[computes]
-compute1
+[all:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_pass=vagrant
+
+[control-hosts]
+allinone
+
+[network-hosts]
+allinone
+
+[compute-nodes]
+allinone
 compute2
-
-[real-hosts]
-allinone  ansible_ssh_host=10.0.0.11 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.11
-compute2  ansible_ssh_host=10.0.0.12 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant tunnels_interface_address=10.0.1.12

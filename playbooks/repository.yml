@@ -1,7 +1,7 @@
 ---
 # OpenStack packages
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-packages
-- hosts: real-hosts
+- hosts: all
   roles:
   - role: repository
   sudo: yes

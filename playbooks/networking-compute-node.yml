@@ -1,7 +1,7 @@
 ---
 # Install and configure compute node
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-compute-node.html
-- hosts: computes
+- hosts: compute-nodes
   roles:
   - role: networking-compute-node
     os_networking_admin_password: "{{ NEUTRON_PASS }}"

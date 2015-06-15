@@ -1,7 +1,7 @@
 ---
 # Install and configure controller node
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-controller-install
-- hosts: controller
+- hosts: control-hosts
   roles:
   - role: compute
     os_database_root_password: "{{ database_password }}"

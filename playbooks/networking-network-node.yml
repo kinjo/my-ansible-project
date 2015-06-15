@@ -1,7 +1,7 @@
 ---
 # Install and configure network node
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-network-node.html
-- hosts: network
+- hosts: network-hosts
   roles:
   - role: networking-network-node
     os_networking_admin_password: "{{ NEUTRON_PASS }}"

@@ -1,7 +1,7 @@
 ---
 # Install and configure controller node
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-controller-node.html
-- hosts: controller
+- hosts: control-hosts
   roles:
   - role: networking
     os_database_root_password: "{{ database_password }}"

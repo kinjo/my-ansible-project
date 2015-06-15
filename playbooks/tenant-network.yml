@@ -1,7 +1,7 @@
 ---
 # Create initial networks
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/neutron-initial-networks.html
-- hosts: controller
+- hosts: control-hosts
   roles:
   - role: tenant-network
     os_tenant_admin_password: "{{ ADMIN_PASS }}"

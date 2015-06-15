@@ -1,7 +1,7 @@
 ---
 # Network Time Protocol (NTP)
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-ntp
-- hosts: real-hosts
+- hosts: all
   roles:
   - role: ntp
   sudo: yes

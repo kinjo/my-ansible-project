@@ -1,7 +1,7 @@
 ---
 # Install and configure a compute node
 # See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_nova.html#nova-compute-install
-- hosts: computes
+- hosts: compute-nodes
   roles:
   - role: compute-node
     os_messaging_password: password

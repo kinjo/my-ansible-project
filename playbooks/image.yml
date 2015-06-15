@@ -1,7 +1,7 @@
 ---
 # Install and configure
 # See http://docs.openstack.org/juno/install-guide/install/apt/content/ch_glance.html
-- hosts: controller
+- hosts: control-hosts
   roles:
   - role: image
     os_database_root_password: "{{ database_password }}"
