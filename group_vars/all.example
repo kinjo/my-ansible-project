@@ -1,4 +1,12 @@
 ---
+# To configure name resolution
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-prerequisites
+hosts:
+- name: controller
+  ip: "{{ hostvars['allinone']['ansible_ssh_host'] }}"
+- name: network
+  ip: "{{ hostvars['allinone']['ansible_ssh_host'] }}"
+
 # For OpenStack services, this guide uses SERVICE_PASS to reference service
 # account passwords and SERVICE_DBPASS to reference database passwords.
 #
@@ -120,4 +128,4 @@ tenant_subnet_nameservers: 10.0.2.3
 virt_type: qemu
 
 # Hostname or IP address to novnproxy which must be accessible from browser
-novncproxy_host: "{{ hostvars['controller']['ansible_ssh_host'] }}"
+novncproxy_host: 10.0.0.11
