@@ -1,0 +1,7 @@
+---
+# To configure name resolution
+# See http://docs.openstack.org/kilo/install-guide/install/apt/content/ch_basic_environment.html#basics-neutron-networking-controller-node
+- name: Edit the /etc/hosts file
+  template:
+    dest: /etc/hosts
+    src: hosts

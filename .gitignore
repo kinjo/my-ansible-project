@@ -1,4 +1,4 @@
 /.vagrant
 *.swp
 group_vars/all
-hosts
+/hosts

@@ -1,0 +1,6 @@
+---
+hosts:
+- name: controller
+  ip: 10.0.0.11
+- name: network
+  ip: 10.0.0.11
