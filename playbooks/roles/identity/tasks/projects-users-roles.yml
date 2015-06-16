@@ -11,11 +11,14 @@
     token: "{{ os_identity_admin_token }}"
 
 - name: Create the admin user
-  keystone_user:
-    user: admin
-    tenant: admin
-    password: "{{ os_project_admin_password }}"
-    token: "{{ os_identity_admin_token }}"
+  shell:
+    openstack user list | grep -q admin ||
+    openstack user create --password "{{ os_project_admin_password }}" admin
+  environment:
+    OS_TOKEN: "{{ os_identity_admin_token }}"
+    OS_URL: http://{{ os_identity_host }}:35357/v2.0
+  register: st
+  changed_when: "'admin' in st.stdout"
 
 - name: Create the admin role and Add the admin role to the admin project and user
   keystone_user:
@@ -41,15 +44,18 @@
     token: "{{ os_identity_admin_token }}"
 
 - name: Create the demo user
-  keystone_user:
-    user: demo
-    tenant: demo
-    password: "{{ os_project_admin_password }}"
-    token: "{{ os_identity_admin_token }}"
+  shell:
+    openstack user list | grep -q demo ||
+    openstack user create --password "{{ os_project_demo_password }}" demo
+  environment:
+    OS_TOKEN: "{{ os_identity_admin_token }}"
+    OS_URL: http://{{ os_identity_host }}:35357/v2.0
+  register: st
+  changed_when: "'demo' in st.stdout"
 
 - name: Create the user role and Add the user role to the demo project and user
   keystone_user:
     user: demo
-    role: demo
+    role: user
     tenant: demo
     token: "{{ os_identity_admin_token }}"
