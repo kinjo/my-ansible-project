@@ -1,9 +1,10 @@
 Master of my ansible project
 ====
 
-This is a collection of my programming environments built with Ansible.
+The collection of my development environments built by Ansible.
 
-It aims to contain various environments such as Ubuntu based, CentOS based and for Ruby reading, Python programming, OpenStack trials, etc.
+This aims to include various environments for Ubuntu, CentOS, Ruby programming,
+Python programming, etc.
 
 Usage
 ---
@@ -12,9 +13,9 @@ Usage
 
         git clone https://github.com/kinjo/my-ansible-project.git
 
-2. Switch to branch
+2. Switch to the branch. For example,
 
-        git checkout -b rbenv+ruby origin/rbenv+ruby
+        git checkout -b openstack-ubuntu-14.04-kilo origin/openstack-ubuntu-14.04-kilo
 
 3. Vagrant up
 
@@ -24,13 +25,18 @@ Usage
 
         vagrant ssh
 
-5. Build environment
-
-   Type following commands in Vagrant virtual machine to install dependent roles.
+5. Change directory
 
         cd /vagrant
+
+6. Prepare templates for the inventory file and the group variables' file
+
+        make prerequisite
+
+7. Install roles if needed
+
         make role
 
-   Finally, run ansible-playbook to build environment.
+8. Run default playbook
 
-        make run
+        make
