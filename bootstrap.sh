@@ -9,14 +9,11 @@ if [ "$(swapon -s | grep -v ^Filename | wc -l)" = "0" ]; then
 fi
 
 # Upgrade
-sudo apt-get update
-sudo apt-get dist-upgrade -y
-
-# Prevent locale warning
-sudo apt-get install -y language-pack-ja
+yum update
 
 # Install Ansible
-sudo apt-get install -y python-dev python-setuptools sshpass git
+sudo yum install -y epel-release python-setuptools python-devel sshpass git
+sudo yum groupinstall -y "Development Tools"
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
