@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Enable swap
+# Enable swap if unavailable
 if [ "$(swapon -s | grep -v ^Filename | wc -l)" = "0" ]; then
   sudo dd if=/dev/zero of=/swapfile bs=1024 count=512k
   sudo mkswap /swapfile
@@ -8,7 +8,7 @@ if [ "$(swapon -s | grep -v ^Filename | wc -l)" = "0" ]; then
   sudo swapon -a
 fi
 
-# Upgrade
+# Update packages
 yum update
 
 # Install Ansible

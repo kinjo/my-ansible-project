@@ -1,2 +1,4 @@
 ---
-- debug: msg={{ something }}
+- name: example
+  debug:
+    msg: "{{ something }}"
