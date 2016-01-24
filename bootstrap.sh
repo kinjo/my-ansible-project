@@ -15,9 +15,4 @@ yum update
 sudo yum install -y epel-release python-setuptools python-devel sshpass git
 sudo yum groupinstall -y "Development Tools"
 sudo easy_install pip
-sudo pip install virtualenv virtualenvwrapper
-sudo virtualenv /opt/ansibleenv
-cat <<EOF > /etc/profile.d/ansible.sh
-echo . /opt/ansibleenv/bin/activate
-EOF
-sudo su - -c 'pip install ansible PyYaML Jinja2'
+sudo pip install ansible PyYaML Jinja2
