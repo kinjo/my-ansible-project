@@ -7,7 +7,7 @@ make help			Show help
 endef
 export HELP
 
-all: something
+all: help
 
 something:
 	ansible-playbook playbooks/something.yml
