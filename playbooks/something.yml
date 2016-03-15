@@ -3,4 +3,4 @@
   roles:
   - role: something
   gather_facts: no
-  sudo: no
+  become: yes
