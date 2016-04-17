@@ -8,11 +8,9 @@ if [ "$(swapon -s | grep -v ^Filename | wc -l)" = "0" ]; then
   sudo swapon -a
 fi
 
-# Update packages
-yum update
-
 # Install Ansible
-sudo yum install -y epel-release python-setuptools python-devel sshpass git
-sudo yum groupinstall -y "Development Tools"
-sudo easy_install pip
-sudo pip install ansible PyYaML Jinja2
+yum -y install epel-release python-setuptools python-devel sshpass git
+yum -y groupinstall "Development Tools"
+easy_install pip
+pip install --upgrade pip
+pip install ansible PyYaML Jinja2
