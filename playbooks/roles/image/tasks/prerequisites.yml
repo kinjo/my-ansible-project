@@ -48,3 +48,4 @@
     internal_url: http://{{ os_image_host }}:9292
     admin_url: http://{{ os_image_host }}:9292
     region: regionOne
+    insecure: 0

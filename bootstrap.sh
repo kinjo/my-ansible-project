@@ -16,9 +16,11 @@ sudo apt-get dist-upgrade -y
 sudo apt-get install -y language-pack-ja
 
 # Install Ansible
-sudo apt-get install -y python-dev python-setuptools sshpass git
+sudo apt-get install -y python-dev python-setuptools sshpass git libffi-dev libssl-dev
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
-echo . /opt/ansibleenv/bin/activate > /etc/profile.d/ansible.sh
+cat <<EOF > /etc/profile.d/ansible.sh
+echo . /opt/ansibleenv/bin/activate
+EOF
 sudo su - -c 'pip install ansible PyYaML Jinja2'

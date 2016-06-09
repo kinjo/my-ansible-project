@@ -48,3 +48,4 @@
     internal_url: http://{{ os_compute_controller_host }}:8774/v2/%(tenant_id)s
     admin_url: http://{{ os_compute_controller_host }}:8774/v2/%(tenant_id)s
     region: regionOne
+    insecure: 0

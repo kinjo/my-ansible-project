@@ -12,3 +12,4 @@
     internal_url: http://{{ os_identity_host }}:5000/v2.0
     admin_url: http://{{ os_identity_host }}:35357/v2.0
     region: regionOne
+    insecure: 0

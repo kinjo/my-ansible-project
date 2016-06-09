@@ -50,3 +50,4 @@
     internal_url: http://{{ os_networking_controller_host }}:9696
     admin_url: http://{{ os_networking_controller_host }}:9696
     region: regionOne
+    insecure: 0
