@@ -24,3 +24,5 @@ cat <<EOF > /etc/profile.d/ansible.sh
 echo . /opt/ansibleenv/bin/activate
 EOF
 sudo su - -c 'pip install ansible PyYaML Jinja2'
+sudo mkdir -p /etc/ansible/roles
+sudo chown -R vagrant:vagrant /etc/ansible

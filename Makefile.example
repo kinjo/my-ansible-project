@@ -20,7 +20,7 @@ prepare:
 
 role:
 	@[ -n "$$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^$$)" ] && \
-	  sudo bash -lc "ansible-galaxy install -i -r requirements.yml" || \
+	  ansible-galaxy install -i -r requirements.yml || \
 	  echo There is no role defined.
 
 help:
