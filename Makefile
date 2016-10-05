@@ -14,7 +14,6 @@ something:
 
 prerequisite:
 	@[ -e hosts ] || cp hosts.example hosts
-	@[ -e group_vars/all ] || cp group_vars/all.example group_vars/all
 
 role:
 	@[ -n "$$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^$$)" ] && \
