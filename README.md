@@ -19,6 +19,7 @@ Usage
 
 3. Vagrant up
 
+        cp Vagrantfile.example Vagrantfile
         vagrant up
 
 4. Vagrant ssh

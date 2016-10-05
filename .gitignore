@@ -2,3 +2,4 @@
 *.swp
 group_vars/all
 hosts
+/Vagrantfile
