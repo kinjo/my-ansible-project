@@ -2,6 +2,7 @@ define HELP
 Available commands:
 
 make something			Run example playbook
+make prepare			Prepare required files.
 make role			Install roles
 make help			Show help
 endef
@@ -12,8 +13,10 @@ all: help
 something:
 	ansible-playbook playbooks/something.yml
 
-prerequisite:
+prepare:
+	@[ -e Vagrantfile ] || cp Vagrantfile.example Vagrantfile
 	@[ -e hosts ] || cp hosts.example hosts
+	@[ -e Makefile ] || cp Makefile.example Makefile
 
 role:
 	@[ -n "$$(sed 's/^ *-*\|#.*//g' requirements.yml | grep -v ^$$)" ] && \
