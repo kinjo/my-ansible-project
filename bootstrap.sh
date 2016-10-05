@@ -16,7 +16,7 @@ sudo apt-get dist-upgrade -y
 sudo apt-get install -y language-pack-ja
 
 # Install Ansible
-sudo apt-get install -y python-dev python-setuptools sshpass git
+sudo apt-get install -y python-dev python-setuptools sshpass libssl-dev git
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
 sudo virtualenv /opt/ansibleenv
