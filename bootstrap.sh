@@ -18,7 +18,7 @@ sudo apt-get install -y language-pack-ja
 # Install Ansible
 sudo apt-get install -y python-dev python-setuptools sshpass libssl-dev git
 sudo easy_install pip
-sudo pip install virtualenv virtualenvwrapper
+sudo pip install virtualenv virtualenvwrapper cryptography
 sudo virtualenv /opt/ansibleenv
 cat <<EOF > /etc/profile.d/ansible.sh
 echo . /opt/ansibleenv/bin/activate
